@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>책마루샘 AI 세특 연구소</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=Noto+Serif+KR:wght@400;600;700&display=swap');
+
+    :root {
+      --bg: #0f1726;
+      --bg-soft: #162033;
+      --panel: #1b2740;
+      --panel-2: #22314f;
+      --text: #f4efe7;
+      --muted: #aab6c9;
+      --line: rgba(255,255,255,0.08);
+      --gold: #d6a11c;
+      --gold-2: #f1bc3d;
+      --sky: #6ab7da;
+      --sky-soft: rgba(106,183,218,0.15);
+      --gold-soft: rgba(214,161,28,0.15);
+      --shadow: 0 18px 50px rgba(0,0,0,0.28);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(106,183,218,0.12), transparent 30%),
+        radial-gradient(circle at 85% 85%, rgba(214,161,28,0.10), transparent 30%),
+        linear-gradient(180deg, #0d1422 0%, #10192a 55%, #0d1422 100%);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .section { padding: 88px 0; position: relative; }
+    .section-title {
+      text-align: center; margin-bottom: 18px; font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.35; font-family: 'Noto Serif KR', serif; letter-spacing: -0.02em;
+    }
+    .section-desc {
+      max-width: 760px; margin: 0 auto 44px; text-align: center; color: var(--muted); font-size: 16px;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px;
+      border: 1px solid rgba(214,161,28,0.28); background: rgba(214,161,28,0.08);
+      color: var(--gold-2); border-radius: 999px; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: '◆'; font-size: 9px; }
+
+    .site-header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: blur(16px);
+      background: rgba(10, 15, 26, 0.72); border-bottom: 1px solid var(--line);
+    }
+    .header-inner {
+      min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #0e1421; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px;
+      box-shadow: 0 10px 24px rgba(214,161,28,0.22); flex-shrink: 0;
+    }
+    .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .brand-text strong { font-size: 15px; font-weight: 800; }
+    .brand-text span { color: var(--muted); font-size: 11px; margin-top: 4px; }
+    .nav { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; justify-content: center; }
+    .nav a { color: var(--muted); font-size: 14px; font-weight: 600; transition: color .2s ease; }
+    .nav a:hover { color: var(--text); }
+    .header-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+    .btn {
+      appearance: none; border: none; cursor: pointer; border-radius: 999px; padding: 14px 22px;
+      font-size: 14px; font-weight: 800; font-family: inherit;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #101724;
+      box-shadow: 0 14px 34px rgba(214,161,28,0.28);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid rgba(255,255,255,0.12);
+    }
+    .btn-block { width: 100%; justify-content: center; display: inline-flex; align-items: center; gap: 8px; }
+
+    .hero { padding: 72px 0 56px; }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 34px; align-items: stretch; }
+    .hero-copy { padding: 26px 0; }
+    .hero-title {
+      margin: 18px 0 16px; font-family: 'Noto Serif KR', serif; font-size: clamp(38px, 6vw, 66px);
+      line-height: 1.18; letter-spacing: -0.03em;
+    }
+    .hero-title .accent { color: var(--gold-2); }
+    .hero-desc { color: var(--muted); font-size: 18px; max-width: 640px; margin-bottom: 28px; }
+    .hero-buttons { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero-badges span {
+      padding: 10px 14px; border: 1px solid var(--line); background: rgba(255,255,255,0.04);
+      border-radius: 999px; color: var(--muted); font-size: 13px; font-weight: 600;
+    }
+    .hero-card {
+      background: linear-gradient(180deg, rgba(30,43,68,0.95), rgba(20,30,48,0.95));
+      border: 1px solid rgba(214,161,28,0.16); border-radius: var(--radius-xl); padding: 28px;
+      box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .hero-card::after {
+      content: ''; position: absolute; inset: auto -60px -60px auto; width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(214,161,28,0.18), transparent 62%); pointer-events: none;
+    }
+    .mini-label {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700;
+      color: var(--sky); letter-spacing: 0.04em; margin-bottom: 16px;
+    }
+    .mini-label::before {
+      content: ''; width: 10px; height: 10px; border-radius: 999px; background: var(--sky);
+      box-shadow: 0 0 0 6px rgba(106,183,218,0.14);
+    }
+    .mock-window {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px; padding: 18px;
+    }
+    .mock-dots { display: flex; gap: 7px; margin-bottom: 16px; }
+    .mock-dots span { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.18); }
+    .mock-panel { display: grid; gap: 12px; }
+    .mock-item {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 14px;
+    }
+    .mock-item strong { display: block; font-size: 13px; margin-bottom: 6px; }
+    .mock-item p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.65; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .card {
+      background: linear-gradient(180deg, rgba(27,39,64,0.94), rgba(21,31,51,0.94));
+      border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 26px;
+      box-shadow: var(--shadow); height: 100%;
+    }
+    .card-icon {
+      width: 52px; height: 52px; border-radius: 16px; display: inline-flex; align-items: center;
+      justify-content: center; font-size: 24px; margin-bottom: 18px;
+      background: linear-gradient(135deg, rgba(214,161,28,0.18), rgba(106,183,218,0.18));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .card h3 { margin: 0 0 10px; font-size: 22px; line-height: 1.35; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; }
+    .card .btn { margin-top: 20px; }
+
+    .soft-block {
+      background: linear-gradient(180deg, rgba(24,35,56,0.9), rgba(18,27,44,0.9));
+      border: 1px solid rgba(255,255,255,0.07); border-radius: var(--radius-xl);
+      padding: 34px; box-shadow: var(--shadow);
+    }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 28px; }
+    .step {
+      padding: 24px; border-radius: var(--radius-lg); background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px;
+      border-radius: 999px; background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #101724; font-weight: 900; margin-bottom: 14px;
+    }
+    .step h3 { margin: 0 0 8px; font-size: 20px; }
+    .step p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    .sample-wrap { display: grid; grid-template-columns: .95fr 1.05fr; gap: 22px; align-items: stretch; }
+    .sample-side { display: grid; gap: 16px; }
+    .sample-box {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px; padding: 22px;
+    }
+    .sample-box h4 { margin: 0 0 10px; font-size: 17px; color: var(--gold-2); }
+    .sample-box p, .sample-box li { margin: 0; color: var(--muted); font-size: 14px; }
+    .sample-box ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+
+    .result-box {
+      background: linear-gradient(180deg, rgba(35,49,78,0.92), rgba(19,28,46,0.94));
+      border: 1px solid rgba(214,161,28,0.16); border-radius: 24px; padding: 28px;
+    }
+    .result-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .flow-node {
+      padding: 10px 14px; border-radius: 999px; background: rgba(106,183,218,0.12);
+      border: 1px solid rgba(106,183,218,0.25); color: var(--sky); font-size: 13px; font-weight: 700;
+    }
+    .flow-arrow { color: var(--gold-2); font-weight: 900; }
+    .result-copy {
+      font-family: 'Noto Serif KR', serif; font-size: 15px; line-height: 1.95; color: #e6edf8;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 18px; padding: 22px; margin-bottom: 18px; white-space: pre-wrap;
+    }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .tag-list span {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 999px;
+      padding: 10px 14px; color: var(--muted); font-size: 14px; font-weight: 600;
+    }
+    .cta-box {
+      text-align: center; padding: 54px 28px; border-radius: 30px;
+      background: radial-gradient(circle at top, rgba(214,161,28,0.16), transparent 35%), linear-gradient(180deg, rgba(27,39,64,0.96), rgba(18,27,44,0.96));
+      border: 1px solid rgba(214,161,28,0.18); box-shadow: var(--shadow);
+    }
+    .cta-box h2 { margin: 16px 0 12px; font-size: clamp(30px, 4vw, 46px); line-height: 1.3; font-family: 'Noto Serif KR', serif; }
+    .cta-box p { max-width: 700px; margin: 0 auto 26px; color: var(--muted); font-size: 17px; }
+    .footer { padding: 28px 0 44px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+    .form-wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 22px; align-items: start; }
+    .form-panel, .result-panel {
+      background: linear-gradient(180deg, rgba(27,39,64,0.94), rgba(21,31,51,0.94));
+      border: 1px solid var(--line); border-radius: 24px; padding: 24px; box-shadow: var(--shadow);
+    }
+    .panel-title { font-size: 22px; margin: 0 0 8px; font-family: 'Noto Serif KR', serif; }
+    .panel-desc { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.span-2 { grid-column: 1 / -1; }
+    .field label { font-size: 12px; color: var(--muted); font-weight: 700; }
+    .field label .req { color: var(--gold-2); }
+    select, input[type='text'], textarea {
+      width: 100%; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04);
+      color: var(--text); padding: 13px 14px; font: inherit; outline: none; transition: .2s ease;
+    }
+    select option { color: #111; }
+    textarea { min-height: 90px; resize: vertical; }
+    select:focus, input:focus, textarea:focus {
+      border-color: rgba(241,188,61,0.8); box-shadow: 0 0 0 3px rgba(214,161,28,0.12);
+      background: rgba(255,255,255,0.06);
+    }
+    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      border-radius: 999px; padding: 9px 13px; border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04); color: var(--muted); font-size: 13px; font-weight: 700;
+      cursor: pointer; user-select: none; transition: .18s ease;
+    }
+    .chip:hover { border-color: rgba(241,188,61,0.5); color: var(--text); }
+    .chip.on { background: rgba(214,161,28,0.16); border-color: rgba(241,188,61,0.65); color: var(--gold-2); }
+    .dir-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .dir-btn {
+      text-align: center; padding: 12px 10px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03); cursor: pointer; color: var(--muted); font-size: 13px; font-weight: 700; transition: .18s ease;
+    }
+    .dir-btn.on { border-color: rgba(241,188,61,0.7); background: rgba(214,161,28,0.14); color: var(--gold-2); }
+    .muted-note { font-size: 12px; color: var(--muted); }
+    .result-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    .small-badge {
+      padding: 6px 10px; border-radius: 999px; background: rgba(214,161,28,0.14); border: 1px solid rgba(241,188,61,0.3);
+      color: var(--gold-2); font-size: 11px; font-weight: 800; letter-spacing: .04em;
+    }
+    .subsection { margin-top: 18px; }
+    .subsection h4 { margin: 0 0 10px; font-size: 15px; color: var(--gold-2); }
+    .list-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 14px; margin-bottom: 10px;
+    }
+    .list-card strong { display: block; margin-bottom: 6px; font-size: 14px; }
+    .list-card p { margin: 0; font-size: 13px; color: var(--muted); }
+    .empty-state {
+      min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+      color: var(--muted); gap: 10px; border: 1px dashed rgba(255,255,255,0.1); border-radius: 20px; background: rgba(255,255,255,0.02);
+    }
+    .empty-state .big { font-size: 42px; }
+    .loading { opacity: .7; pointer-events: none; }
+    .copy-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .career-import-card {
+      margin-bottom: 20px; background: linear-gradient(180deg, rgba(31,45,72,0.96), rgba(20,30,48,0.96));
+      border: 1px solid rgba(214,161,28,0.16); border-radius: 22px; padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .career-import-grid { display: grid; gap: 14px; }
+    .career-textarea { min-height: 150px; }
+    .button-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .preview-title { margin: 0 0 12px; font-size: 16px; color: var(--gold-2); }
+    .career-preview-wrap {
+      margin-top: 18px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .preview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .preview-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 14px;
+    }
+    .preview-card.full { grid-column: 1 / -1; }
+    .preview-card strong { display:block; margin-bottom: 6px; font-size: 13px; }
+    .preview-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .summary-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 14px;
+    }
+    .summary-card strong { display:block; margin-bottom: 6px; font-size: 13px; }
+    .summary-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+
+    @media (max-width: 1080px) {
+      .hero-grid, .sample-wrap, .feature-grid, .card-grid, .steps, .form-wrap { grid-template-columns: 1fr; }
+      .header-inner { flex-wrap: wrap; justify-content: center; padding: 14px 0; }
+      .nav { order: 3; }
+    }
+    @media (max-width: 720px) {
+      .container { width: min(var(--max), calc(100% - 24px)); }
+      .section { padding: 64px 0; }
+      .hero { padding-top: 38px; }
+      .hero-title { font-size: 40px; }
+      .hero-desc { font-size: 16px; }
+      .card, .soft-block, .hero-card, .cta-box, .result-box, .form-panel, .result-panel { padding: 22px; }
+      .header-actions { width: 100%; justify-content: center; }
+      .btn { width: 100%; }
+      .hero-buttons { flex-direction: column; }
+      .form-grid, .dir-grid, .preview-grid, .summary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#home" class="brand">
+        <div class="brand-mark">책</div>
+        <div class="brand-text">
+          <strong>책마루샘 AI 세특 연구소</strong>
+          <span>Bookmaru AI Setech Lab</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="#setech">세특 설계</a>
+        <a href="#demo">실전 입력폼</a>
+        <a href="#performance">수행평가</a>
+        <a href="#report">탐구보고서</a>
+        <a href="#resources">자료실</a>
+      </nav>
+      <div class="header-actions">
+        <button class="btn btn-secondary">로그인</button>
+        <button class="btn btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">무료로 시작하기</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">탐구형 세특 설계 플랫폼</div>
+          <h1 class="hero-title">
+            막막한 관심사를<br />
+            <span class="accent">세특·수행평가·탐구보고서</span>로<br />
+            연결합니다
+          </h1>
+          <p class="hero-desc">
+            과목, 진로, 탐구 주제를 입력하면 학생의 질문과 활동을 바탕으로 입시에 남는 탐구형 결과물을 설계합니다.
+          </p>
+          <div class="hero-buttons">
+            <button class="btn btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">무료로 세특 만들기</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">수행평가 주제 찾기</button>
+          </div>
+          <div class="hero-badges">
+            <span>세특 초안 생성</span>
+            <span>수행평가 주제 추천</span>
+            <span>탐구보고서 목차 설계</span>
+            <span>면접 질문까지 확장</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="mini-label">탐구 흐름 설계 미리보기</div>
+          <div class="mock-window">
+            <div class="mock-dots"><span></span><span></span><span></span></div>
+            <div class="mock-panel">
+              <div class="mock-item"><strong>입력 정보</strong><p>생명과학 · 의대 진로 · 사춘기 호르몬 변화</p></div>
+              <div class="mock-item"><strong>탐구 흐름</strong><p>의문 설정 → 자료 조사 → 교과 개념 연결 → 발표 및 확장</p></div>
+              <div class="mock-item"><strong>결과물</strong><p>세특 초안 / 추천 도서 / 탐구 활동 / 합격 포인트</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div style="text-align:center; margin-bottom:18px;"><div class="eyebrow">문제 해결</div></div>
+        <h2 class="section-title">이런 고민, 한 번에 해결합니다</h2>
+        <p class="section-desc">세특이 늘 비슷하게 써지거나, 수행평가 주제가 막막하거나, 탐구보고서의 목차가 잡히지 않을 때 바로 활용할 수 있도록 설계했습니다.</p>
+        <div class="card-grid">
+          <article class="card"><div class="card-icon">✍️</div><h3>세특이 늘 비슷하게 써져요</h3><p>교과 개념, 학생 활동, 진로 방향을 함께 연결해 학생만의 탐구 흐름이 드러나는 초안을 제안합니다.</p></article>
+          <article class="card"><div class="card-icon">📚</div><h3>수행평가 주제가 막막해요</h3><p>발표형, 보고서형, 실험형, 조사형 등 수행 유형에 맞는 주제를 추천하고 확장 방향까지 잡아줍니다.</p></article>
+          <article class="card"><div class="card-icon">🔎</div><h3>탐구보고서 목차가 안 잡혀요</h3><p>탐구 질문, 보고서 제목, 목차, 참고자료 방향, 결론 포인트까지 단계별로 구조를 제시합니다.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="demo">
+      <div class="container">
+        <div style="text-align:center; margin-bottom:18px;"><div class="eyebrow">실전 입력폼</div></div>
+        <h2 class="section-title">실제로 눌러서 결과를 확인해보세요</h2>
+        <p class="section-desc">클로드 화면의 흐름을 참고해, 키 없이도 바로 동작하는 데모형 생성기를 붙였습니다. 나중에 API만 연결하면 실제 서비스형으로 확장할 수 있습니다.</p>
+
+        <div class="form-wrap">
+          <section class="form-panel">
+            <h3 class="panel-title">탐구형 세특 설계 입력</h3>
+            <p class="panel-desc">과목, 진로, 탐구 질문과 활동을 입력하면 세특 초안, 추천 도서, 탐구 활동, 합격 포인트를 자동 구성합니다.</p>
+
+            <div class="career-import-card">
+              <div class="small-badge" style="display:inline-flex; margin-bottom:12px;">진로앱 연동</div>
+              <h4 class="panel-title" style="font-size:22px; margin:0 0 8px;">진로설계 결과 붙여넣기</h4>
+              <p class="panel-desc" style="margin-bottom:16px;">책마루 진로설계 앱 결과를 붙여넣으면 추천 전공, 강점 키워드, 교과 전략을 추출해 세특앱 입력과 결과 화면에 반영합니다.</p>
+
+              <div class="career-import-grid">
+                <div class="field span-2">
+                  <label>진로앱 결과 원문</label>
+                  <textarea id="careerResultRaw" class="career-textarea" placeholder="학생용 해석, 학부모용 해석, 추천 직업 TOP3, 추천 전공 TOP5, 진로 연계 교과 전략, 세특 연결 문장을 그대로 붙여넣으세요."></textarea>
+                </div>
+                <div class="button-row">
+                  <button type="button" class="btn btn-secondary" id="careerAnalyzeBtn" style="width:auto;">진로앱 결과 분석하기</button>
+                  <button type="button" class="btn btn-secondary" id="careerApplyBtn" style="width:auto;" disabled>세특 입력값에 반영하기</button>
+                </div>
+              </div>
+
+              <div class="career-preview-wrap" id="careerPreviewWrap" style="display:none;">
+                <h4 class="preview-title">자동 추출 결과</h4>
+                <div class="preview-grid">
+                  <div class="preview-card"><strong>진로 방향</strong><p id="careerCodePreview">-</p></div>
+                  <div class="preview-card"><strong>핵심 성향</strong><p id="careerTraitPreview">-</p></div>
+                  <div class="preview-card"><strong>강점 키워드</strong><p id="careerStrengthPreview">-</p></div>
+                  <div class="preview-card"><strong>추천 직업</strong><p id="careerJobPreview">-</p></div>
+                  <div class="preview-card"><strong>추천 전공</strong><p id="careerMajorPreview">-</p></div>
+                  <div class="preview-card"><strong>추천 교과</strong><p id="careerSubjectPreview">-</p></div>
+                  <div class="preview-card full"><strong>세특 반영 포인트</strong><p id="careerSetechPreview">-</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>과목 <span class="req">*</span></label>
+                <select id="subject">
+                  <option value="">과목 선택</option>
+                  <option>생명과학</option><option>화학</option><option>물리학</option><option>통합과학</option>
+                  <option>수학</option><option>국어</option><option>영어</option><option>사회·문화</option>
+                  <option>경제</option><option>정보</option><option>한국사</option><option>기타</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>학년</label>
+                <select id="grade">
+                  <option value="">선택</option><option>고1</option><option>고2</option><option>고3</option><option>중3</option>
+                </select>
+              </div>
+              <div class="field span-2">
+                <label>희망 진로·학과 <span class="req">*</span></label>
+                <input type="text" id="major" placeholder="예: 의대, 간호학과, 컴퓨터공학과, 교육학과" />
+              </div>
+              <div class="field span-2">
+                <label>관심 단원 또는 탐구 주제 <span class="req">*</span></label>
+                <input type="text" id="topic" placeholder="예: 사춘기 호르몬 변화, 화학 반응 속도, 경제적 불평등" />
+              </div>
+              <div class="field span-2">
+                <label>궁금한 질문 1문장</label>
+                <input type="text" id="question" placeholder="예: 사춘기 호르몬 변화가 체중 증가와 어떤 관련이 있을까?" />
+              </div>
+              <div class="field span-2">
+                <label>활동 유형 선택</label>
+                <div class="chip-group" id="activityTypes">
+                  <button type="button" class="chip">수행평가</button>
+                  <button type="button" class="chip">실험</button>
+                  <button type="button" class="chip">발표</button>
+                  <button type="button" class="chip">독서</button>
+                  <button type="button" class="chip">기사·논문 읽기</button>
+                  <button type="button" class="chip">탐구보고서</button>
+                </div>
+              </div>
+              <div class="field span-2">
+                <label>실제 해본 활동 내용</label>
+                <input type="text" id="activity" placeholder="예: 호르몬 관련 자료 조사, 성장·체중 변화 발표" />
+              </div>
+              <div class="field span-2">
+                <label>참고 자료</label>
+                <input type="text" id="reference" placeholder="예: 레닌저 생화학, 청소년 건강 기사, 의학 채널 영상" />
+              </div>
+              <div class="field span-2">
+                <label>강조할 핵심 역량</label>
+                <div class="chip-group" id="skills">
+                  <button type="button" class="chip">과학적 사고력</button>
+                  <button type="button" class="chip">자료 분석</button>
+                  <button type="button" class="chip">자기주도성</button>
+                  <button type="button" class="chip">융합적 사고</button>
+                  <button type="button" class="chip">문제 해결력</button>
+                  <button type="button" class="chip">발표·소통</button>
+                  <button type="button" class="chip">진로 연계</button>
+                </div>
+              </div>
+              <div class="field span-2">
+                <label>결과 방향 선택</label>
+                <div class="dir-grid" id="directionGrid">
+                  <button type="button" class="dir-btn on">세특형</button>
+                  <button type="button" class="dir-btn">보고서형</button>
+                  <button type="button" class="dir-btn">발표형</button>
+                  <button type="button" class="dir-btn">의대 연계형</button>
+                  <button type="button" class="dir-btn">심화탐구형</button>
+                  <button type="button" class="dir-btn">이공계 연계형</button>
+                </div>
+              </div>
+              <div class="field span-2">
+                <label>추가 메모</label>
+                <textarea id="memo" placeholder="예: 교과 외 확장 아이디어가 필요함 / 의대 면접까지 연결하고 싶음"></textarea>
+              </div>
+              <div class="field span-2">
+                <button class="btn btn-primary btn-block" id="generateBtn">✦ 탐구형 세특 설계하기</button>
+                <div class="muted-note">현재 버전은 프런트엔드 데모 생성기입니다. 실제 API 키 연결 없이도 결과가 나오도록 구성했습니다.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="result-panel" id="resultPanel">
+            <div class="empty-state" id="emptyState">
+              <div class="big">🧭</div>
+              <strong>아직 결과가 없습니다</strong>
+              <div>왼쪽 입력폼을 채우고 <b>탐구형 세특 설계하기</b>를 눌러보세요.</div>
+            </div>
+
+            <div id="resultContent" style="display:none;">
+              <div class="result-head">
+                <h3 class="panel-title" style="margin:0; font-size:24px;">탐구형 결과</h3>
+                <span class="small-badge">DEMO GENERATOR</span>
+              </div>
+              <p class="panel-desc">입력 내용을 바탕으로 구성한 세특 초안과 확장 자료입니다.</p>
+
+              <div class="subsection" id="careerSummarySection" style="display:none;">
+                <h4>진로앱 연동 요약</h4>
+                <div class="summary-grid">
+                  <div class="summary-card"><strong>추천 전공</strong><p id="resultCareerMajor">-</p></div>
+                  <div class="summary-card"><strong>강점 키워드</strong><p id="resultCareerStrength">-</p></div>
+                  <div class="summary-card"><strong>세특 반영 포인트</strong><p id="resultCareerSetech">-</p></div>
+                </div>
+              </div>
+
+              <div class="subsection">
+                <h4>탐구 흐름</h4>
+                <div class="result-flow" id="resultFlow"></div>
+              </div>
+
+              <div class="subsection">
+                <h4>생기부 기재 문구 초안</h4>
+                <div class="result-copy" id="resultSetech"></div>
+                <div class="copy-row">
+                  <button class="btn btn-secondary" id="copyBtn" style="width:auto;">복사하기</button>
+                  <button class="btn btn-secondary" id="regenBtn" style="width:auto;">예시 다시 만들기</button>
+                </div>
+              </div>
+
+              <div class="subsection">
+                <h4>추천 도서</h4>
+                <div id="booksBox"></div>
+              </div>
+
+              <div class="subsection">
+                <h4>추천 탐구 활동</h4>
+                <div id="activitiesBox"></div>
+              </div>
+
+              <div class="subsection">
+                <h4>이 세특의 합격 포인트</h4>
+                <div id="pointsBox"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="setech">
+      <div class="container">
+        <div style="text-align:center; margin-bottom:18px;"><div class="eyebrow">핵심 기능</div></div>
+        <h2 class="section-title">책마루샘 AI로 할 수 있는 것</h2>
+        <p class="section-desc">문장만 생성하는 도구가 아니라, 질문에서 시작해 탐구와 결과물까지 이어지는 흐름을 설계합니다.</p>
+        <div class="feature-grid">
+          <article class="card"><div class="card-icon">🧩</div><h3>세특 설계</h3><p>관심사와 활동을 연결해 교과형, 진로연계형, 심화탐구형 세특 초안을 만듭니다.</p><button class="btn btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">세특 설계 시작하기</button></article>
+          <article class="card" id="performance"><div class="card-icon">📝</div><h3>수행평가 기획</h3><p>과목, 단원, 진로를 기반으로 발표형·보고서형·실험형 수행평가 주제를 추천합니다.</p><button class="btn btn-primary">수행평가 추천받기</button></article>
+          <article class="card" id="report"><div class="card-icon">📘</div><h3>탐구보고서 작성</h3><p>연구 질문부터 목차, 자료 방향, 결론 포인트까지 보고서 구조를 체계적으로 설계합니다.</p><button class="btn btn-primary">보고서 구조 만들기</button></article>
+          <article class="card"><div class="card-icon">🎤</div><h3>면접 대비</h3><p>생기부와 세특을 바탕으로 예상 질문, 꼬리질문, 1분 답변 방향까지 제공합니다.</p><button class="btn btn-primary">면접 질문 생성하기</button></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container soft-block">
+        <div style="text-align:center; margin-bottom:18px;"><div class="eyebrow">사용 대상</div></div>
+        <h2 class="section-title">학생, 학부모, 선생님 모두를 위한 구조</h2>
+        <p class="section-desc" style="margin-bottom:0;">같은 기능이라도 누가 쓰느냐에 따라 필요한 결과가 다르기 때문에, 실제 사용 흐름에 맞춰 설계했습니다.</p>
+        <div class="card-grid" style="margin-top:36px;">
+          <article class="card"><div class="card-icon">🎓</div><h3>학생</h3><p>관심사를 탐구 주제로 바꾸고, 세특과 수행평가까지 연결하고 싶은 학생에게 적합합니다.</p></article>
+          <article class="card"><div class="card-icon">👩‍👧</div><h3>학부모</h3><p>아이의 진로와 교과 활동을 체계적으로 연결해주고 싶은 학부모가 방향을 잡기 좋습니다.</p></article>
+          <article class="card"><div class="card-icon">👩‍🏫</div><h3>선생님·공부방 운영자</h3><p>학생별 세특 방향, 수행평가 설계, 피드백 문장을 효율적으로 만들고 싶은 선생님에게 유용합니다.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div style="text-align:center; margin-bottom:18px;"><div class="eyebrow">사용 흐름</div></div>
+        <h2 class="section-title">사용 방법은 간단합니다</h2>
+        <p class="section-desc">복잡한 설정 없이, 입력부터 결과 확장까지 3단계 흐름으로 바로 사용할 수 있습니다.</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><h3>입력</h3><p>과목, 진로, 탐구 주제, 실제 활동을 입력합니다.</p></div>
+          <div class="step"><div class="step-num">2</div><h3>설계</h3><p>세특 초안, 수행평가 주제, 보고서 구조를 자동으로 설계합니다.</p></div>
+          <div class="step"><div class="step-num">3</div><h3>확장</h3><p>면접 질문, 발표문, 교사 피드백까지 이어서 확장합니다.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container sample-wrap">
+        <div class="sample-side">
+          <div class="sample-box"><h4>추천 수행평가 확장</h4><ul><li>발표형 주제: 사춘기 호르몬 변화와 청소년 건강</li><li>보고서형 주제: 호르몬과 체중 변화의 상관관계 분석</li><li>심화 확장: 생활 습관과 호르몬 균형의 관계</li></ul></div>
+          <div class="sample-box"><h4>면접 예상 질문</h4><ul><li>이 탐구 주제를 선택한 이유는 무엇인가요?</li><li>탐구 과정에서 가장 어려웠던 점은 무엇이었나요?</li><li>이 활동이 진로와 어떻게 연결되나요?</li></ul></div>
+        </div>
+        <div class="result-box">
+          <div class="mini-label">탐구형 세특 결과 예시</div>
+          <div class="result-flow"><span class="flow-node">의문 설정</span><span class="flow-arrow">→</span><span class="flow-node">자료 조사</span><span class="flow-arrow">→</span><span class="flow-node">교과 개념 연결</span><span class="flow-arrow">→</span><span class="flow-node">발표 및 확장</span></div>
+          <div class="result-copy">사춘기 호르몬 변화와 체중 증가의 상관관계에 의문을 품고, 관련 교과 개념과 청소년 건강 자료를 조사함. 호르몬 변화가 신체 증상과 생활 습관에 미치는 영향을 분석하며 생명과학 개념을 실제 사례와 연결해 탐구함. 이후 청소년 건강관리 방안까지 확장하여 발표하며 과학적 사고력과 진로 연계 역량을 드러냄.</div>
+          <div class="hero-buttons" style="margin-bottom:0;"><button class="btn btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">이 형식으로 세특 만들기</button><button class="btn btn-secondary">수행평가로 확장하기</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="resources">
+      <div class="container">
+        <div style="text-align:center; margin-bottom:18px;"><div class="eyebrow">자료실</div></div>
+        <h2 class="section-title">과목별 자료도 함께 제공합니다</h2>
+        <p class="section-desc">탐구 주제, 추천 도서, 논문·기사 키워드, 세특 우수 표현, 수행평가 예시까지 함께 쓸 수 있습니다.</p>
+        <div class="tag-list"><span>과목별 탐구 주제</span><span>추천 도서</span><span>논문·기사 키워드</span><span>세특 우수 표현</span><span>수행평가 예시</span><span>면접 질문 모음</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container"><div class="cta-box"><div class="eyebrow">지금 시작해보세요</div><h2>한 줄 관심사를, 입시에 남는 탐구 기록으로</h2><p>세특, 수행평가, 탐구보고서, 면접까지<br />책마루샘 AI와 함께 한 번에 설계해보세요.</p><div class="hero-buttons" style="justify-content:center; margin-bottom:0;"><button class="btn btn-primary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">무료로 시작하기</button><button class="btn btn-secondary">서비스 둘러보기</button></div></div></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner"><div>책마루샘 AI 세특 연구소</div><div>학생의 질문을 성장의 결과물로 연결합니다.</div></div>
+  </footer>
+
+  <script>
+    const chipGroups = ['activityTypes', 'skills'];
+    chipGroups.forEach(id => {
+      document.getElementById(id).addEventListener('click', (e) => {
+        const btn = e.target.closest('.chip');
+        if (!btn) return;
+        btn.classList.toggle('on');
+      });
+    });
+
+    document.getElementById('directionGrid').addEventListener('click', (e) => {
+      const btn = e.target.closest('.dir-btn');
+      if (!btn) return;
+      document.querySelectorAll('#directionGrid .dir-btn').forEach(el => el.classList.remove('on'));
+      btn.classList.add('on');
+    });
+
+    const subjectBookMap = {
+      '생명과학': ['이기적 유전자 (리처드 도킨스)', '캠벨 생명과학', '바디: 우리 몸 안내서 (빌 브라이슨)'],
+      '화학': ['세상을 바꾼 화학', '주기율표', '화학의 쓸모'],
+      '물리학': ['떨림과 울림', '코스모스', '물리학자는 영화에서 과학을 본다'],
+      '수학': ['수학이 필요한 순간', '수학의 쓸모', '미적분의 힘'],
+      '국어': ['공부하는 힘, 글쓰기', '문해력 수업', '읽는 인간 리터러시를 경험하다'],
+      '사회·문화': ['정의란 무엇인가', '사피엔스', '불평등의 세대'],
+      '경제': ['죽은 경제학자의 살아있는 아이디어', '넛지', '경제학 콘서트'],
+      '정보': ['비전공자를 위한 이해할 수 있는 IT 지식', '클린 코드', 'AI 2025 트렌드'],
+      '통합과학': ['과학이 필요한 시간', '10대를 위한 미래과학 콘서트', '과학은 어떻게 세상을 바꾸는가'],
+      '기타': ['질문의 힘', '생각의 탄생', '공부의 미래']
+    };
+
+    const subjectActivityMap = {
+      '생명과학': ['호르몬·면역·항상성 관련 기사 비교 분석', '성장·건강 데이터를 표로 정리해 상관관계 해석', '교과 개념을 실제 질환 사례와 연결한 발표 구성'],
+      '화학': ['반응 속도나 산염기 중화 관련 조건 변화 실험 설계', '생활 속 화학 물질의 작용 원리 탐구', '실험 결과를 표·그래프로 정리해 해석'],
+      '물리학': ['운동, 에너지, 파동 개념을 일상 사례로 분석', '변수 통제 중심의 간단한 실험 설계', '물리 개념을 공학 기술과 연결한 발표'],
+      '수학': ['실생활 데이터를 활용한 함수·통계 분석', '그래프 해석을 통한 의사결정 보고서 작성', '진로 관련 수치 자료를 수학적으로 모델링'],
+      '국어': ['비문학 자료 2종 이상 비교 분석', '주제어 중심 독서 후 비판적 감상문 작성', '사회 이슈를 언어 표현 방식과 연결해 발표'],
+      '사회·문화': ['설문 문항을 직접 설계해 소규모 조사 진행', '사회 현상을 개념 틀로 해석해 보고서 작성', '기사·통계 자료를 활용한 원인-결과 분석'],
+      '경제': ['경제 지표 기사 비교 분석', '소비·노동·불평등 이슈에 대한 자료 조사', '경제 개념을 실제 사례와 연결한 카드뉴스 제작'],
+      '정보': ['간단한 알고리즘 흐름도 설계', 'AI 서비스의 원리와 한계 조사', '데이터 수집·분류 과정을 표로 정리'],
+      '통합과학': ['교과 개념을 건강·환경·기술 사례와 융합', '작은 실험 또는 자료 조사 중심 탐구', '주제 관련 기사 3편 비교 후 결론 도출'],
+      '기타': ['관련 자료를 3개 이상 비교 정리', '핵심 질문을 중심으로 탐구 흐름 시각화', '진로와 연결되는 발표 자료 제작']
+    };
+
+    const directionFlowMap = {
+      '세특형': ['의문 설정', '자료 조사', '교과 개념 연결', '발표 및 확장'],
+      '보고서형': ['문제 제기', '이론 탐색', '분석 과정', '결론 정리'],
+      '발표형': ['주제 선정', '핵심 근거 정리', '시각자료 구성', '발표 및 질의응답'],
+      '의대 연계형': ['건강 문제 인식', '생명과학 탐구', '의학 사례 연결', '예방·관리 제안'],
+      '심화탐구형': ['핵심 질문 설정', '심화 자료 조사', '비교·분석', '확장 해석'],
+      '이공계 연계형': ['문제 발견', '원리 탐구', '기술 연결', '응용 가능성 제시']
+    };
+
+    function getSelectedTexts(selector) {
+      return [...document.querySelectorAll(selector)].filter(el => el.classList.contains('on')).map(el => el.textContent.trim());
+    }
+
+    function pick(arr, n = 3) {
+      const copy = [...arr];
+      const out = [];
+      while (copy.length && out.length < n) {
+        const idx = Math.floor(Math.random() * copy.length);
+        out.push(copy.splice(idx, 1)[0]);
+      }
+      return out;
+    }
+
+    const careerParsedData = {
+      code: '',
+      trait: '',
+      strength: '',
+      jobs: '',
+      majors: '',
+      subjects: '',
+      setechPoint: ''
+    };
+
+    function pickCareerLine(text, keywords) {
+      const lines = text.split('\n').map(v => v.trim()).filter(Boolean);
+      for (const line of lines) {
+        for (const keyword of keywords) {
+          if (line.includes(keyword)) return line;
+        }
+      }
+      return '';
+    }
+
+    function fillCareerPreview() {
+      document.getElementById('careerCodePreview').textContent = careerParsedData.code || '-';
+      document.getElementById('careerTraitPreview').textContent = careerParsedData.trait || '-';
+      document.getElementById('careerStrengthPreview').textContent = careerParsedData.strength || '-';
+      document.getElementById('careerJobPreview').textContent = careerParsedData.jobs || '-';
+      document.getElementById('careerMajorPreview').textContent = careerParsedData.majors || '-';
+      document.getElementById('careerSubjectPreview').textContent = careerParsedData.subjects || '-';
+      document.getElementById('careerSetechPreview').textContent = careerParsedData.setechPoint || '-';
+      document.getElementById('careerPreviewWrap').style.display = 'block';
+      document.getElementById('careerApplyBtn').disabled = false;
+    }
+
+    function analyzeCareerResult() {
+      const raw = document.getElementById('careerResultRaw').value.trim();
+      if (!raw) {
+        alert('진로앱 결과를 먼저 붙여넣어 주세요.');
+        return;
+      }
+      careerParsedData.code = pickCareerLine(raw, ['진로코드', '진로 방향', '유형', '핵심 방향']) || '자동 추출 필요';
+      careerParsedData.trait = pickCareerLine(raw, ['핵심 성향', '성향', '특징', '기질']) || '자동 추출 필요';
+      careerParsedData.strength = pickCareerLine(raw, ['강점 키워드', '강점', '핵심 키워드']) || '자동 추출 필요';
+      careerParsedData.jobs = pickCareerLine(raw, ['추천 직업', '직업 TOP3', '추천 직업 TOP3']) || '자동 추출 필요';
+      careerParsedData.majors = pickCareerLine(raw, ['추천 전공', '전공 TOP5', '추천 전공 TOP5']) || '자동 추출 필요';
+      careerParsedData.subjects = pickCareerLine(raw, ['추천 교과', '진로 연계 교과', '교과 전략']) || '자동 추출 필요';
+      careerParsedData.setechPoint = pickCareerLine(raw, ['세특 연결', '세특 포인트', '세특 연결 문장']) || '자동 추출 필요';
+      fillCareerPreview();
+    }
+
+    function cleanCareerValue(text, label) {
+      return (text || '').replace(label, '').replace(':', '').trim();
+    }
+
+    function applyCareerResult() {
+      const majorInput = document.getElementById('major');
+      const topicInput = document.getElementById('topic');
+      const referenceInput = document.getElementById('reference');
+      if (majorInput && careerParsedData.majors) {
+        majorInput.value = cleanCareerValue(careerParsedData.majors, '추천 전공') || majorInput.value;
+      }
+      if (topicInput && careerParsedData.setechPoint && careerParsedData.setechPoint !== '자동 추출 필요') {
+        topicInput.value = cleanCareerValue(careerParsedData.setechPoint, '세특 연결 문장').replace('세특 포인트', '').trim() || topicInput.value;
+      }
+      if (referenceInput && careerParsedData.subjects && careerParsedData.subjects !== '자동 추출 필요') {
+        referenceInput.value = cleanCareerValue(careerParsedData.subjects, '추천 교과').replace('진로 연계 교과', '').replace('교과 전략', '').trim();
+      }
+      alert('진로앱 결과가 세특앱 입력값에 반영되었습니다.');
+    }
+
+    function buildSentence(data) {
+      const q = data.question || `${data.topic}의 의미와 영향`;
+      const activityText = data.activity || `${data.topic} 관련 자료를 스스로 탐색하고 정리한 경험`;
+      const ref = data.reference || '교과서와 관련 자료';
+      const skills = data.skills.length ? data.skills.slice(0, 3).join(', ') : '자기주도성, 자료 분석, 진로 연계';
+      const directionTone = data.direction.includes('의대') ? '의료 분야와의 연결 가능성을' : data.direction.includes('이공계') ? '기술 응용 가능성을' : '진로와의 연관성을';
+      return `${data.topic}에 대해 '${q}'라는 의문을 바탕으로 탐구를 시작함. ${activityText}을(를) 통해 ${data.subject} 교과 개념을 구체적으로 이해하고, ${ref}를 참고하여 핵심 원리와 실제 사례를 연결해 분석함. 특히 ${directionTone} 스스로 확장하며 탐구의 깊이를 더했고, 결과를 정리·발표하는 과정에서 ${skills} 역량을 드러냄. ${data.major} 진로와 연계해 후속 탐구 가능성까지 고민했다는 점에서 학업적 호기심과 성장 가능성이 돋보임.`;
+    }
+
+    function buildBooks(subject, major) {
+      const base = subjectBookMap[subject] || subjectBookMap['기타'];
+      return pick(base, 3).map((title, idx) => ({
+        title,
+        desc: idx === 0 ? `${subject} 개념을 깊게 이해하고 ${major} 진로와 연결하기 좋은 기본 도서입니다.` : idx === 1 ? `탐구 주제를 확장해 비교·분석 포인트를 잡기에 적합합니다.` : `독서 활동을 세특 문장과 면접 답변으로 확장하기 좋습니다.`
+      }));
+    }
+
+    function buildActivities(subject, topic) {
+      const base = subjectActivityMap[subject] || subjectActivityMap['기타'];
+      return pick(base, 3).map((item, idx) => ({
+        title: idx === 0 ? `${topic} 자료 조사 활동` : idx === 1 ? `${topic} 발표·보고서 확장` : `${topic} 심화 탐구 아이디어`,
+        desc: item
+      }));
+    }
+
+    function buildPoints(data) {
+      return [
+        { title: '교과 개념과 실제 사례 연결', desc: `${data.subject}에서 배운 내용을 단순 암기가 아니라 실제 현상과 연결한 점이 강점입니다.` },
+        { title: '진로 방향의 선명함', desc: `${data.major}와 연계된 탐구 맥락이 드러나 학생의 관심 분야가 분명하게 보입니다.` },
+        { title: '자기주도 탐구 흐름', desc: `질문 설정 → 자료 조사 → 정리 및 발표의 흐름이 살아 있어 학업 태도가 잘 드러납니다.` },
+        { title: '확장 가능성', desc: `수행평가, 보고서, 면접까지 이어질 수 있는 주제라 활용도가 높습니다.` }
+      ];
+    }
+
+    function renderResult(data) {
+      const flow = directionFlowMap[data.direction] || directionFlowMap['세특형'];
+      document.getElementById('resultFlow').innerHTML = flow.map((item, idx) => `${idx ? '<span class="flow-arrow">→</span>' : ''}<span class="flow-node">${item}</span>`).join('');
+      document.getElementById('resultSetech').textContent = buildSentence(data);
+
+      const books = buildBooks(data.subject, data.major);
+      document.getElementById('booksBox').innerHTML = books.map(b => `<div class="list-card"><strong>${b.title}</strong><p>${b.desc}</p></div>`).join('');
+
+      const acts = buildActivities(data.subject, data.topic);
+      document.getElementById('activitiesBox').innerHTML = acts.map(a => `<div class="list-card"><strong>${a.title}</strong><p>${a.desc}</p></div>`).join('');
+
+      const points = buildPoints(data);
+      document.getElementById('pointsBox').innerHTML = points.map(p => `<div class="list-card"><strong>${p.title}</strong><p>${p.desc}</p></div>`).join('');
+
+      if (careerParsedData.majors || careerParsedData.strength || careerParsedData.setechPoint) {
+        document.getElementById('careerSummarySection').style.display = 'block';
+        document.getElementById('resultCareerMajor').textContent = careerParsedData.majors || '-';
+        document.getElementById('resultCareerStrength').textContent = careerParsedData.strength || '-';
+        document.getElementById('resultCareerSetech').textContent = careerParsedData.setechPoint || '-';
+      } else {
+        document.getElementById('careerSummarySection').style.display = 'none';
+      }
+
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('resultContent').style.display = 'block';
+    }
+
+    function collectData() {
+      return {
+        subject: document.getElementById('subject').value.trim(),
+        grade: document.getElementById('grade').value.trim(),
+        major: document.getElementById('major').value.trim(),
+        topic: document.getElementById('topic').value.trim(),
+        question: document.getElementById('question').value.trim(),
+        activity: document.getElementById('activity').value.trim(),
+        reference: document.getElementById('reference').value.trim(),
+        memo: document.getElementById('memo').value.trim(),
+        activities: getSelectedTexts('#activityTypes .chip'),
+        skills: getSelectedTexts('#skills .chip'),
+        direction: document.querySelector('#directionGrid .dir-btn.on')?.textContent.trim() || '세특형'
+      };
+    }
+
+    document.getElementById('careerAnalyzeBtn').addEventListener('click', analyzeCareerResult);
+    document.getElementById('careerApplyBtn').addEventListener('click', applyCareerResult);
+
+    const generateBtn = document.getElementById('generateBtn');
+    generateBtn.addEventListener('click', () => {
+      const data = collectData();
+      if (!data.subject || !data.major || !data.topic) {
+        alert('과목, 희망 진로·학과, 탐구 주제는 필수입니다.');
+        return;
+      }
+      generateBtn.textContent = '생성 중...';
+      generateBtn.classList.add('loading');
+      setTimeout(() => {
+        renderResult(data);
+        generateBtn.textContent = '✦ 탐구형 세특 설계하기';
+        generateBtn.classList.remove('loading');
+        document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 500);
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const text = document.getElementById('resultSetech').textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        const btn = document.getElementById('copyBtn');
+        const old = btn.textContent;
+        btn.textContent = '복사 완료';
+        setTimeout(() => btn.textContent = old, 1300);
+      } catch (e) {
+        alert('복사 기능을 사용할 수 없습니다.');
+      }
+    });
+
+    document.getElementById('regenBtn').addEventListener('click', () => {
+      const data = collectData();
+      if (!data.subject || !data.major || !data.topic) return;
+      renderResult(data);
+    });
+  </script>
+</body>
+</html>
