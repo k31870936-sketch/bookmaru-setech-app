@@ -3,792 +3,1413 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>책마루샘 AI 세특 연구소 2.0</title>
+  <title>책마루샘 AI 세특 연구소</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;800;900&family=Noto+Serif+KR:wght@600;700&display=swap');
-
-    :root{
-      --bg:#0d1422;
-      --bg2:#121b2d;
-      --panel:#182338;
-      --panel2:#1e2c46;
-      --line:rgba(255,255,255,.09);
-      --text:#f7f2ea;
-      --muted:#aab6c9;
-      --gold:#d9a62a;
-      --gold2:#f1c04a;
-      --sky:#77b8e0;
-      --danger:#ffb3b3;
-      --radius-xl:28px;
-      --radius-lg:20px;
-      --radius-md:14px;
-      --shadow:0 18px 44px rgba(0,0,0,.28);
-      --max:1240px;
+    :root {
+      --bg: #0d1320;
+      --panel: #131e30;
+      --panel-2: #1a2840;
+      --border: rgba(255,255,255,0.08);
+      --border-gold: rgba(214,161,28,0.3);
+      --text: #f0ece3;
+      --muted: #8ea3bf;
+      --gold: #d6a11c;
+      --gold-2: #f1bc3d;
+      --sky: #6ab7da;
+      --green: #5ec97a;
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
     }
 
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body{
-      margin:0;
-      font-family:'Noto Sans KR', sans-serif;
-      background:
-        radial-gradient(circle at 10% 10%, rgba(119,184,224,.12), transparent 30%),
-        radial-gradient(circle at 90% 85%, rgba(217,166,42,.12), transparent 28%),
-        linear-gradient(180deg, var(--bg), #101a2a 50%, var(--bg));
-      color:var(--text);
-      line-height:1.65;
-    }
-    a{ color:inherit; text-decoration:none; }
-    .container{ width:min(var(--max), calc(100% - 32px)); margin:0 auto; }
-
-    .header{
-      position:sticky; top:0; z-index:50;
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,19,32,0.9);
       backdrop-filter: blur(14px);
-      background:rgba(10,15,26,.76);
-      border-bottom:1px solid var(--line);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
     }
-    .header-inner{
-      display:flex; align-items:center; justify-content:space-between; gap:16px;
-      min-height:76px;
+    .header-inner {
+      max-width: 820px; margin: 0 auto;
+      height: 58px; display: flex; align-items: center; justify-content: space-between;
     }
-    .brand{ display:flex; align-items:center; gap:12px; }
-    .brand-mark{
-      width:42px; height:42px; border-radius:14px;
-      display:flex; align-items:center; justify-content:center;
-      background:linear-gradient(135deg, var(--gold), var(--gold2));
-      color:#101724; font-weight:900; box-shadow:0 10px 28px rgba(217,166,42,.28);
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; font-size: 15px; text-decoration: none; color: var(--text);
     }
-    .brand-text strong{ display:block; font-size:15px; }
-    .brand-text span{ display:block; font-size:11px; color:var(--muted); margin-top:4px; }
-    .nav{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; justify-content:center; }
-    .nav a{ color:var(--muted); font-size:14px; font-weight:700; }
-    .nav a:hover{ color:var(--text); }
-
-    .btn{
-      appearance:none; border:none; cursor:pointer; font:inherit;
-      border-radius:999px; padding:13px 20px; font-size:14px; font-weight:800;
-      transition:.18s ease;
+    .brand-icon {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      display: flex; align-items: center; justify-content: center;
+      color: #0d1320; font-weight: 900; font-size: 16px; flex-shrink: 0;
     }
-    .btn:hover{ transform:translateY(-1px); }
-    .btn-primary{ background:linear-gradient(135deg, var(--gold), var(--gold2)); color:#111827; }
-    .btn-secondary{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.11); color:var(--text); }
-    .btn-ghost{ background:rgba(119,184,224,.08); border:1px solid rgba(119,184,224,.22); color:var(--sky); }
-
-    .hero{ padding:70px 0 44px; }
-    .hero-grid{
-      display:grid; grid-template-columns:1.1fr .9fr; gap:26px; align-items:stretch;
-    }
-    .eyebrow{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:8px 14px; border-radius:999px;
-      background:rgba(217,166,42,.10); border:1px solid rgba(217,166,42,.28);
-      color:var(--gold2); font-size:12px; font-weight:800; letter-spacing:.04em;
-    }
-    .hero h1{
-      margin:18px 0 14px;
-      font-family:'Noto Serif KR', serif;
-      font-size:clamp(34px, 5vw, 58px);
-      line-height:1.18;
-      letter-spacing:-.03em;
-    }
-    .hero h1 .accent{ color:var(--gold2); }
-    .hero p{
-      margin:0 0 24px; color:var(--muted); font-size:17px; max-width:720px;
-    }
-    .hero-buttons{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
-    .badge-row{ display:flex; gap:10px; flex-wrap:wrap; }
-    .badge-row span{
-      padding:9px 13px; border-radius:999px; background:rgba(255,255,255,.04);
-      border:1px solid var(--line); color:var(--muted); font-size:13px; font-weight:700;
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .header-badge {
+      font-size: 11px; padding: 4px 10px; border-radius: 999px;
+      background: rgba(214,161,28,0.12); border: 1px solid var(--border-gold);
+      color: var(--gold-2); font-weight: 700;
     }
 
-    .card{
-      background:linear-gradient(180deg, rgba(28,39,63,.96), rgba(20,30,50,.96));
-      border:1px solid var(--line);
-      border-radius:var(--radius-xl);
-      box-shadow:var(--shadow);
+    /* ── TABS ── */
+    .tabs-wrap { max-width: 820px; margin: 0 auto; padding: 20px 20px 0; }
+    .tab-list {
+      display: flex; gap: 4px;
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 5px;
     }
-    .hero-side{ padding:24px; }
-    .mini{
-      color:var(--sky); font-size:12px; font-weight:800; letter-spacing:.04em; margin-bottom:14px;
+    .tab-btn {
+      flex: 1; padding: 10px 8px; border: none; border-radius: 14px;
+      background: transparent; color: var(--muted);
+      font: 600 13px 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all .2s; white-space: nowrap;
     }
-    .stack{ display:grid; gap:12px; }
-    .mini-card{
-      border-radius:18px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
-      padding:16px;
-    }
-    .mini-card strong{ display:block; font-size:14px; margin-bottom:6px; }
-    .mini-card p{ margin:0; font-size:13px; color:var(--muted); }
-
-    .section{ padding:22px 0 80px; }
-    .layout{ display:grid; grid-template-columns:420px 1fr; gap:22px; align-items:start; }
-    .panel{ padding:24px; }
-    .section-title{ margin:0 0 8px; font-size:26px; font-family:'Noto Serif KR', serif; }
-    .section-desc{ margin:0 0 18px; color:var(--muted); font-size:14px; }
-
-    .sub-badge{
-      display:inline-flex; align-items:center; padding:7px 11px; border-radius:999px;
-      background:rgba(119,184,224,.10); border:1px solid rgba(119,184,224,.22);
-      color:var(--sky); font-size:12px; font-weight:800; margin-bottom:12px;
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #0d1320;
     }
 
-    .field-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-    .field{ display:flex; flex-direction:column; gap:7px; }
-    .field.full{ grid-column:1 / -1; }
-    .field label{ font-size:12px; color:var(--muted); font-weight:800; }
-    .field label .req{ color:var(--gold2); }
+    /* ── MAIN ── */
+    .main { max-width: 820px; margin: 0 auto; padding: 18px 20px 80px; }
 
-    input[type=text], select, textarea{
-      width:100%; border-radius:16px; border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04); color:var(--text);
-      padding:13px 14px; font:inherit; outline:none;
+    /* ── PANELS ── */
+    .panel {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
     }
-    textarea{ resize:vertical; min-height:92px; }
-    input:focus, select:focus, textarea:focus{
-      border-color:rgba(241,192,74,.7);
-      box-shadow:0 0 0 3px rgba(217,166,42,.12);
-      background:rgba(255,255,255,.06);
+    .panel-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 16px; font-weight: 700;
+      margin: 0 0 16px; display: flex; align-items: center; gap: 8px;
     }
-    select option{ color:#111; }
-
-    .import-box{
-      margin-bottom:18px; padding:18px; border-radius:20px;
-      background:linear-gradient(180deg, rgba(33,47,75,.94), rgba(24,34,55,.96));
-      border:1px solid rgba(217,166,42,.18);
-    }
-    .import-box h4{ margin:0 0 6px; font-size:18px; }
-    .import-box p{ margin:0 0 14px; font-size:13px; color:var(--muted); }
-    .button-row{ display:flex; gap:10px; flex-wrap:wrap; }
-    .preview-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
-    .preview-card{
-      padding:14px; border-radius:16px; background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.07);
-    }
-    .preview-card.full{ grid-column:1 / -1; }
-    .preview-card strong{ display:block; font-size:13px; margin-bottom:6px; }
-    .preview-card p{ margin:0; color:var(--muted); font-size:13px; white-space:pre-wrap; }
-
-    .generate-bar{
-      display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;
-      padding-top:16px; border-top:1px solid var(--line);
+    .panel-title::before {
+      content: ''; width: 4px; height: 17px; border-radius: 2px;
+      background: linear-gradient(180deg, var(--gold), var(--gold-2)); flex-shrink: 0;
     }
 
-    .result-panel{ padding:24px; }
-    .profile-summary{
-      display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:16px;
-    }
-    .summary-item{
-      padding:14px; border-radius:16px; background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.07);
-    }
-    .summary-item strong{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
-    .summary-item p{ margin:0; font-size:14px; font-weight:700; }
+    /* ── FORM ── */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field + .field { margin-top: 13px; }
+    .field label { font-size: 11px; font-weight: 700; color: var(--muted); }
+    .req { color: var(--gold-2); }
 
-    .top-tabs{
-      display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;
+    input[type="text"], select, textarea {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text); padding: 11px 13px;
+      font: 14px 'Noto Sans KR', sans-serif;
+      outline: none; transition: border-color .2s, box-shadow .2s;
+      -webkit-appearance: none;
     }
-    .tab-btn{
-      border:none; cursor:pointer; font:inherit; padding:10px 14px; border-radius:999px;
-      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
-      color:var(--muted); font-weight:800;
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(241,188,61,0.6);
+      box-shadow: 0 0 0 3px rgba(214,161,28,0.1);
     }
-    .tab-btn.active{
-      background:rgba(217,166,42,.16); border-color:rgba(241,192,74,.45); color:var(--gold2);
+    select option { background: #1a2840; color: var(--text); }
+    textarea { min-height: 76px; resize: vertical; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* ── CHIPS & DIR ── */
+    .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      padding: 7px 12px; border-radius: 999px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font: 700 12px 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all .18s; user-select: none;
+    }
+    .chip:hover { border-color: rgba(241,188,61,0.4); color: var(--text); }
+    .chip.on { background: rgba(214,161,28,0.14); border-color: rgba(241,188,61,0.6); color: var(--gold-2); }
+
+    .dir-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .dir-btn {
+      padding: 10px 6px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); font: 700 12px 'Noto Sans KR', sans-serif;
+      text-align: center; cursor: pointer; transition: all .18s;
+    }
+    .dir-btn.on { border-color: rgba(241,188,61,0.6); background: rgba(214,161,28,0.12); color: var(--gold-2); }
+
+    /* ── MODE TOGGLE ── */
+    .mode-toggle {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+    }
+    .mode-btn {
+      padding: 13px 10px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: rgba(255,255,255,0.03);
+      color: var(--muted); font: 700 13px 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all .2s; text-align: center;
+    }
+    .mode-btn .mode-label { display: block; font-size: 15px; font-weight: 800; margin-bottom: 3px; }
+    .mode-btn .mode-desc { font-size: 11px; color: var(--muted); font-weight: 500; }
+    .mode-btn.on {
+      border-color: rgba(241,188,61,0.55);
+      background: rgba(214,161,28,0.1);
+    }
+    .mode-btn.on .mode-label { color: var(--gold-2); }
+    .mode-btn.on .mode-desc { color: rgba(241,188,61,0.7); }
+
+    /* ── BUTTONS ── */
+    .btn-generate {
+      width: 100%; padding: 16px; border: none; border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #0d1320; font: 800 16px 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 12px 32px rgba(214,161,28,0.22);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(214,161,28,0.3); }
+    .btn-generate:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .btn-action {
+      padding: 9px 15px; border-radius: 999px;
+      border: 1px solid var(--border); background: rgba(255,255,255,0.04);
+      color: var(--text); font: 700 12px 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all .18s;
+    }
+    .btn-action:hover { border-color: rgba(241,188,61,0.4); color: var(--gold-2); }
+    .btn-secondary {
+      padding: 11px 18px; border-radius: 999px;
+      border: 1px solid var(--border-gold); background: rgba(214,161,28,0.08);
+      color: var(--gold-2); font: 700 13px 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all .18s;
+    }
+    .btn-secondary:hover { background: rgba(214,161,28,0.14); }
+    .btn-secondary:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ── LOADING / ERROR ── */
+    .loading-box {
+      display: none; align-items: center; gap: 12px;
+      padding: 16px 20px; background: var(--panel);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      margin-bottom: 12px; color: var(--muted); font-size: 14px;
+    }
+    .loading-box.visible { display: flex; }
+    .spinner {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid rgba(214,161,28,0.2); border-top-color: var(--gold-2);
+      animation: spin .8s linear infinite; flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box {
+      display: none; padding: 13px 17px;
+      background: rgba(220,80,80,0.1); border: 1px solid rgba(220,80,80,0.25);
+      border-radius: var(--radius-sm); margin-bottom: 12px;
+      color: #f08080; font-size: 13px;
+    }
+    .error-box.visible { display: block; }
+
+    /* ── RESULT PANEL ── */
+    .result-wrap { display: none; }
+    .result-wrap.visible { display: block; }
+
+    .result-section {
+      background: linear-gradient(180deg, rgba(26,40,64,0.97), rgba(17,26,42,0.97));
+      border: 1px solid rgba(214,161,28,0.16);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
     }
 
-    .tab-pane{ display:none; }
-    .tab-pane.active{ display:block; }
+    .live-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; color: var(--sky);
+      letter-spacing: 0.06em; margin-bottom: 10px;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 999px; background: var(--sky);
+      box-shadow: 0 0 0 5px rgba(106,183,218,0.16);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-    .content-card{
-      padding:18px; border-radius:20px; background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.07); margin-bottom:14px;
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 999px; margin-bottom: 12px;
     }
-    .content-card h4{ margin:0 0 8px; font-size:17px; color:var(--gold2); }
-    .content-card p{ margin:0; color:var(--muted); font-size:14px; white-space:pre-wrap; }
-    .content-card ul{ margin:0; padding-left:18px; color:var(--muted); display:grid; gap:8px; }
-    .content-card li{ font-size:14px; }
-    .wada-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .pill-list{ display:flex; gap:8px; flex-wrap:wrap; }
-    .pill-list span{
-      display:inline-flex; padding:9px 12px; border-radius:999px;
-      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
-      color:var(--muted); font-size:13px; font-weight:700;
+    .badge-gold { background: rgba(214,161,28,0.12); border: 1px solid var(--border-gold); color: var(--gold-2); }
+    .badge-sky { background: rgba(106,183,218,0.1); border: 1px solid rgba(106,183,218,0.25); color: var(--sky); }
+    .badge-green { background: rgba(94,201,122,0.1); border: 1px solid rgba(94,201,122,0.25); color: var(--green); }
+
+    .result-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 16px; font-weight: 700; margin: 0 0 12px;
+    }
+    .result-text {
+      font-family: 'Noto Serif KR', serif; font-size: 14px; line-height: 2;
+      color: #dde8f4; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-sm); padding: 16px;
+      white-space: pre-wrap; min-height: 48px;
+    }
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+    /* 흐름 */
+    .flow-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 14px; }
+    .flow-node {
+      padding: 5px 11px; border-radius: 999px;
+      background: rgba(106,183,218,0.1); border: 1px solid rgba(106,183,218,0.2);
+      color: var(--sky); font-size: 12px; font-weight: 700;
+    }
+    .flow-arrow { color: var(--gold-2); font-size: 13px; font-weight: 900; }
+
+    /* 심화 섹션 공통 */
+    .deep-section {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
+    }
+    .deep-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 15px; font-weight: 700; margin: 0 0 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .deep-sub { font-size: 13px; font-weight: 700; color: var(--gold-2); margin: 14px 0 8px; }
+
+    /* 목차 */
+    .toc-list { display: grid; gap: 7px; }
+    .toc-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 11px 14px;
+    }
+    .toc-num {
+      flex-shrink: 0; width: 22px; height: 22px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #0d1320; font-size: 11px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
+    }
+    .toc-text strong { display: block; font-size: 13px; }
+    .toc-text span { font-size: 12px; color: var(--muted); }
+
+    /* 서론/결론 */
+    .intro-block {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-sm); padding: 15px;
+      font-family: 'Noto Serif KR', serif; font-size: 14px;
+      line-height: 1.95; color: #dde8f4; white-space: pre-wrap; min-height: 40px;
     }
 
-    .empty-state{
-      min-height:420px; display:flex; align-items:center; justify-content:center;
-      text-align:center; padding:20px; border-radius:22px;
-      border:1px dashed rgba(255,255,255,.12); background:rgba(255,255,255,.02);
-      color:var(--muted);
+    /* 면접 */
+    .interview-list { display: grid; gap: 10px; }
+    .interview-item {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px;
+    }
+    .interview-q { font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--sky); }
+    .interview-tip { font-size: 12px; color: var(--muted); }
+    .interview-a {
+      font-size: 13px; color: #dde8f4; line-height: 1.8;
+      margin-top: 8px; padding-top: 8px;
+      border-top: 1px solid var(--border);
+      white-space: pre-wrap; min-height: 20px;
     }
 
-    .sticky-actions{
-      position:sticky; bottom:0; z-index:20; margin-top:18px;
-      padding:12px; border-radius:18px; background:rgba(10,15,26,.86);
-      border:1px solid rgba(255,255,255,.10); backdrop-filter:blur(12px);
-      display:flex; gap:10px; flex-wrap:wrap;
+    /* 서브 카드 */
+    .list-items { display: grid; gap: 8px; }
+    .list-item {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px;
     }
+    .list-item strong { display: block; font-size: 13px; margin-bottom: 4px; }
+    .list-item p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
 
-    .footer{
-      padding:34px 0 50px; color:var(--muted); font-size:13px;
+    /* ── CAREER TAB ── */
+    .career-preview { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .career-preview.visible { display: block; }
+    .preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .preview-card {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px;
     }
+    .preview-card.full { grid-column: 1 / -1; }
+    .preview-card strong { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .preview-card span { font-size: 13px; }
 
-    @media (max-width: 1080px){
-      .layout, .hero-grid{ grid-template-columns:1fr; }
-      .profile-summary{ grid-template-columns:1fr 1fr; }
-    }
-    @media (max-width: 720px){
-      .container{ width:min(var(--max), calc(100% - 20px)); }
-      .nav{ display:none; }
-      .field-grid, .preview-grid, .profile-summary, .wada-grid{ grid-template-columns:1fr; }
-      .hero{ padding-top:38px; }
-      .panel, .result-panel, .hero-side{ padding:20px; }
-      .button-row, .generate-bar, .sticky-actions, .hero-buttons{ flex-direction:column; }
-      .btn{ width:100%; }
+    /* ── TAB CONTENT ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 580px) {
+      .row-2 { grid-template-columns: 1fr; }
+      .dir-grid { grid-template-columns: repeat(2,1fr); }
+      .preview-grid { grid-template-columns: 1fr; }
+      .preview-card.full { grid-column: 1; }
+      .mode-toggle { grid-template-columns: 1fr 1fr; }
+      header { padding: 0 14px; }
+      .tabs-wrap { padding: 14px 14px 0; }
+      .main { padding: 14px 14px 80px; }
+      .panel, .result-section, .deep-section { padding: 16px; }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="container header-inner">
-      <a href="#home" class="brand">
-        <div class="brand-mark">책</div>
-        <div class="brand-text">
-          <strong>책마루샘 AI 세특 연구소 2.0</strong>
-          <span>Setech · Report · Reading · Question Seeds</span>
-        </div>
-      </a>
-      <nav class="nav">
-        <a href="#builder">세특 생성</a>
-        <a href="#builder">탐구보고서</a>
-        <a href="#builder">독서 연계</a>
-        <a href="#builder">질문씨앗</a>
-        <a href="#builder">관리자모드</a>
-      </nav>
-      <a class="btn btn-primary" href="#builder">바로 시작하기</a>
-    </div>
-  </header>
 
-  <main>
-    <section class="hero" id="home">
-      <div class="container hero-grid">
+<header>
+  <div class="header-inner">
+    <a href="#" class="brand">
+      <div class="brand-icon">책</div>
+      <span>책마루샘 AI 세특</span>
+    </a>
+    <div class="header-right">
+      <span class="header-badge">AI POWERED</span>
+    </div>
+  </div>
+</header>
+
+<div class="tabs-wrap">
+  <div class="tab-list" role="tablist">
+    <button class="tab-btn active" data-tab="setech">✦ 세특 설계</button>
+    <button class="tab-btn" data-tab="seed">🌱 질문 씨앗</button>
+    <button class="tab-btn" data-tab="career">진로앱 연동</button>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- ══ 세특 TAB ══ -->
+  <div class="tab-content active" id="tab-setech">
+
+    <!-- 생성 모드 선택 -->
+    <div class="panel">
+      <div class="panel-title">생성 모드</div>
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-btn on" data-mode="basic">
+          <span class="mode-label">⚡ 기본 세특</span>
+          <span class="mode-desc">세특 문구 + 도서 + 활동 추천</span>
+        </button>
+        <button class="mode-btn" data-mode="full">
+          <span class="mode-label">🔬 심화 보고서</span>
+          <span class="mode-desc">목차 + 서론/결론 + 면접 질문</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 기본 정보 -->
+    <div class="panel">
+      <div class="panel-title">기본 정보</div>
+      <div class="row-2">
+        <div class="field">
+          <label>과목 <span class="req">*</span></label>
+          <select id="subject">
+            <option value="">선택</option>
+            <option>생명과학</option><option>화학</option><option>물리학</option>
+            <option>통합과학</option><option>수학</option><option>국어</option>
+            <option>영어</option><option>사회·문화</option><option>경제</option>
+            <option>정보</option><option>한국사</option><option>기타</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>학년</label>
+          <select id="grade">
+            <option value="">선택</option>
+            <option>중3</option><option>고1</option><option>고2</option><option>고3</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:13px;">
+        <label>희망 진로·학과 <span class="req">*</span></label>
+        <input type="text" id="major" placeholder="예: 의대, 간호학과, 컴퓨터공학과" />
+      </div>
+      <div class="field">
+        <label>관심 탐구 주제 <span class="req">*</span></label>
+        <input type="text" id="topic" placeholder="예: 사춘기 호르몬 변화, 화학 반응 속도" />
+      </div>
+    </div>
+
+    <!-- 탐구 내용 -->
+    <div class="panel">
+      <div class="panel-title">탐구 내용</div>
+      <div class="field">
+        <label>궁금했던 질문 1문장</label>
+        <input type="text" id="question" placeholder="예: 호르몬 변화가 체중 증가와 어떤 관련이 있을까?" />
+      </div>
+      <div class="field">
+        <label>실제 해본 활동</label>
+        <input type="text" id="activity" placeholder="예: 관련 논문 3편 조사, 실험 설계, 발표" />
+      </div>
+      <div class="field">
+        <label>참고 자료</label>
+        <input type="text" id="reference" placeholder="예: 캠벨 생명과학, 청소년 건강 기사" />
+      </div>
+      <div class="field">
+        <label>활동 유형</label>
+        <div class="chip-group" id="activityTypes">
+          <button class="chip">수행평가</button><button class="chip">실험</button>
+          <button class="chip">발표</button><button class="chip">독서</button>
+          <button class="chip">논문·기사</button><button class="chip">탐구보고서</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>강조할 역량</label>
+        <div class="chip-group" id="skills">
+          <button class="chip">과학적 사고력</button><button class="chip">자료 분석</button>
+          <button class="chip">자기주도성</button><button class="chip">융합 사고</button>
+          <button class="chip">문제 해결력</button><button class="chip">발표·소통</button>
+          <button class="chip">진로 연계</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>추가 메모</label>
+        <textarea id="memo" placeholder="면접 연결, 심화 방향, 특별히 강조하고 싶은 점 등"></textarea>
+      </div>
+    </div>
+
+    <!-- 결과 방향 -->
+    <div class="panel">
+      <div class="panel-title">결과 방향</div>
+      <div class="dir-grid" id="directionGrid">
+        <button class="dir-btn on">세특형</button>
+        <button class="dir-btn">보고서형</button>
+        <button class="dir-btn">발표형</button>
+        <button class="dir-btn">의대 연계형</button>
+        <button class="dir-btn">심화탐구형</button>
+        <button class="dir-btn">이공계 연계형</button>
+      </div>
+    </div>
+
+    <div class="error-box" id="errorBox"></div>
+    <div class="loading-box" id="loadingBox">
+      <div class="spinner"></div>
+      <span id="loadingMsg">Claude AI가 세특 문구를 생성하고 있습니다…</span>
+    </div>
+
+    <!-- ── 기본 결과 ── -->
+    <div class="result-wrap" id="basicResult">
+      <div class="result-section">
+        <div class="live-label"><div class="live-dot"></div>AI 생성 결과</div>
+        <div class="flow-row" id="resultFlow"></div>
+        <div class="result-text" id="resultSetech"></div>
+        <div class="action-row">
+          <button class="btn-action" id="copyBtn">📋 복사하기</button>
+          <button class="btn-action" id="regenBtn">🔄 다시 생성</button>
+        </div>
+      </div>
+
+      <div class="deep-section">
+        <div class="deep-title" style="justify-content:space-between; align-items:center;">
+          <span class="section-badge badge-gold">추천 도서</span>
+          <button class="btn-action" id="copyBooks" style="font-size:11px; padding:6px 11px;">📋 복사</button>
+        </div>
+        <div class="list-items" id="booksBox"></div>
+      </div>
+
+      <div class="deep-section">
+        <div class="deep-title" style="justify-content:space-between; align-items:center;">
+          <span class="section-badge badge-sky">탐구 확장 활동</span>
+          <button class="btn-action" id="copyActivities" style="font-size:11px; padding:6px 11px;">📋 복사</button>
+        </div>
+        <div class="list-items" id="activitiesBox"></div>
+      </div>
+
+      <div class="deep-section">
+        <div class="deep-title" style="justify-content:space-between; align-items:center;">
+          <span class="section-badge badge-green">합격 포인트</span>
+          <button class="btn-action" id="copyPoints" style="font-size:11px; padding:6px 11px;">📋 복사</button>
+        </div>
+        <div class="list-items" id="pointsBox"></div>
+      </div>
+
+      <!-- 전체 저장 -->
+      <div class="deep-section" style="text-align:center; padding:16px;">
+        <button class="btn-generate" id="saveBasicBtn" style="max-width:320px; font-size:14px; padding:14px;">
+          💾 전체 결과 텍스트로 저장
+        </button>
+      </div>
+    </div>
+
+    <!-- ── 심화 결과 ── -->
+    <div class="result-wrap" id="fullResult">
+
+      <!-- 세특 문구 -->
+      <div class="result-section">
+        <div class="live-label"><div class="live-dot"></div>AI 생성 결과</div>
+        <div class="flow-row" id="fullResultFlow"></div>
+        <div class="section-badge badge-gold" style="margin-bottom:10px;">생기부 세특 문구</div>
+        <div class="result-text" id="fullResultSetech"></div>
+        <div class="action-row">
+          <button class="btn-action" id="copyBtnFull">📋 세특 복사</button>
+          <button class="btn-action" id="regenBtnFull">🔄 다시 생성</button>
+        </div>
+      </div>
+
+      <!-- 보고서 목차 -->
+      <div class="deep-section" id="tocSection">
+        <div class="deep-title">
+          <span class="section-badge badge-sky">탐구보고서 목차</span>
+        </div>
+        <div class="toc-list" id="tocList"></div>
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn-action" id="copyToc">📋 목차 복사</button>
+        </div>
+      </div>
+
+      <!-- 서론 / 결론 -->
+      <div class="deep-section">
+        <div class="deep-title">
+          <span class="section-badge badge-gold">서론 · 결론 초안</span>
+        </div>
+        <div class="deep-sub">📌 서론</div>
+        <div class="intro-block" id="introText"></div>
+        <div class="deep-sub" style="margin-top:16px;">📌 결론</div>
+        <div class="intro-block" id="conclusionText"></div>
+        <div class="action-row" style="margin-top:12px;">
+          <button class="btn-action" id="copyIntro">📋 서론 복사</button>
+          <button class="btn-action" id="copyConclusion">📋 결론 복사</button>
+        </div>
+      </div>
+
+      <!-- 면접 질문 -->
+      <div class="deep-section">
+        <div class="deep-title" style="justify-content:space-between; align-items:center;">
+          <span class="section-badge badge-green">면접 예상 질문 · 답변 방향</span>
+          <button class="btn-action" id="copyInterview" style="font-size:11px; padding:6px 11px;">📋 복사</button>
+        </div>
+        <div class="interview-list" id="interviewList"></div>
+      </div>
+
+      <!-- 전체 저장 -->
+      <div class="deep-section" style="text-align:center; padding:16px;">
+        <button class="btn-generate" id="saveFullBtn" style="max-width:320px; font-size:14px; padding:14px;">
+          💾 전체 결과 텍스트로 저장
+        </button>
+      </div>
+
+    </div>
+
+    <button class="btn-generate" id="generateBtn">✦ AI로 세특 생성하기</button>
+  </div>
+
+  <!-- ══ 진로앱 TAB ══ -->
+  <div class="tab-content" id="tab-career">
+    <div class="panel">
+      <div class="panel-title">진로앱 결과 붙여넣기</div>
+      <p style="font-size:13px; color:var(--muted); margin:0 0 14px; line-height:1.7;">
+        책마루 진로설계 앱 결과를 그대로 붙여넣으면<br />
+        추천 전공·강점·교과 전략을 자동으로 추출해<br />
+        세특 입력값에 반영합니다.
+      </p>
+      <div class="field">
+        <label>진로앱 결과 원문</label>
+        <textarea id="careerResultRaw" style="min-height:160px;"
+          placeholder="진로코드, 핵심 성향, 강점 키워드, 추천 직업 TOP3, 추천 전공 TOP5, 진로 연계 교과 전략, 세특 연결 문장 등을 그대로 붙여넣으세요."></textarea>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button class="btn-secondary" id="careerAnalyzeBtn">분석하기</button>
+        <button class="btn-secondary" id="careerApplyBtn" disabled>세특 입력에 반영하기</button>
+      </div>
+      <div class="career-preview" id="careerPreview">
+        <div style="font-size:13px; font-weight:700; color:var(--gold-2); margin-bottom:10px;">자동 추출 결과</div>
+        <div class="preview-grid">
+          <div class="preview-card"><strong>진로 방향</strong><span id="pCode">-</span></div>
+          <div class="preview-card"><strong>핵심 성향</strong><span id="pTrait">-</span></div>
+          <div class="preview-card"><strong>강점 키워드</strong><span id="pStrength">-</span></div>
+          <div class="preview-card"><strong>추천 직업</strong><span id="pJobs">-</span></div>
+          <div class="preview-card"><strong>추천 전공</strong><span id="pMajors">-</span></div>
+          <div class="preview-card"><strong>추천 교과</strong><span id="pSubjects">-</span></div>
+          <div class="preview-card full"><strong>세특 반영 포인트</strong><span id="pSetech">-</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 질문 씨앗 TAB ══ -->
+  <div class="tab-content" id="tab-seed">
+
+    <div class="panel">
+      <div class="panel-title">질문 씨앗 생성</div>
+      <p style="font-size:13px; color:var(--muted); margin:0 0 16px; line-height:1.75;">
+        교과와 탐구 주제를 입력하면 탐구를 시작할 수 있는 <b style="color:var(--gold-2)">질문 씨앗 5개</b>와<br />
+        각 질문마다 <b style="color:var(--sky)">독서 연계 도서</b> + <b style="color:var(--green)">교과 연계 포인트</b>를 함께 제안합니다.
+      </p>
+      <div class="seed-input-row">
+        <div class="field">
+          <label>과목 <span class="req">*</span></label>
+          <select id="seedSubject">
+            <option value="">선택</option>
+            <option>생명과학</option><option>화학</option><option>물리학</option>
+            <option>통합과학</option><option>수학</option><option>국어</option>
+            <option>영어</option><option>사회·문화</option><option>경제</option>
+            <option>정보</option><option>한국사</option><option>기타</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>학년</label>
+          <select id="seedGrade">
+            <option value="">선택</option>
+            <option>중3</option><option>고1</option><option>고2</option><option>고3</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:13px;">
+        <label>탐구 주제 또는 관심사 <span class="req">*</span></label>
+        <input type="text" id="seedTopic" placeholder="예: 사춘기 호르몬 변화, 기후 위기, 인공지능 윤리" />
+      </div>
+      <div class="field">
+        <label>희망 진로·학과 (선택)</label>
+        <input type="text" id="seedMajor" placeholder="예: 의대, 환경공학과, 교육학과" />
+      </div>
+    </div>
+
+    <div class="error-box" id="seedErrorBox"></div>
+    <div class="loading-box" id="seedLoadingBox">
+      <div class="spinner"></div>
+      <span>Claude AI가 질문 씨앗을 생성하고 있습니다…</span>
+    </div>
+
+    <!-- 결과 -->
+    <div id="seedResultWrap" style="display:none;"></div>
+
+    <!-- 씨앗 전체 저장 (결과 나온 후 표시) -->
+    <div id="seedSaveRow" style="display:none; text-align:center; margin-bottom:14px;">
+      <button class="btn-generate" id="saveSeedBtn" style="max-width:320px; font-size:14px; padding:14px;">
+        💾 질문 씨앗 전체 텍스트로 저장
+      </button>
+    </div>
+
+    <button class="btn-generate" id="seedGenerateBtn">🌱 질문 씨앗 생성하기</button>
+
+  </div>
+
+</main>
+
+  <!-- ══ 질문 씨앗 CSS ══ -->
+  <style>
+    /* 씨앗 카드 */
+    .seed-card {
+      background: linear-gradient(160deg, rgba(26,40,64,0.97), rgba(17,26,44,0.97));
+      border: 1px solid rgba(214,161,28,0.15);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 12px;
+    }
+    .seed-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #0d1320; font-size: 12px; font-weight: 900;
+      flex-shrink: 0; margin-right: 10px;
+    }
+    .seed-q-row { display: flex; align-items: flex-start; margin-bottom: 14px; }
+    .seed-q {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 15px; font-weight: 700; line-height: 1.6;
+      color: var(--text); flex: 1;
+    }
+    .seed-divider {
+      border: none; border-top: 1px solid var(--border); margin: 0 0 12px;
+    }
+    .seed-conn-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+      color: var(--muted); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .seed-conn-title::before { content: attr(data-icon); }
+    .seed-conn-body {
+      font-size: 13px; line-height: 1.75; color: #ccd8ec;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px;
+      white-space: pre-wrap; min-height: 20px;
+    }
+    .seed-conn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .seed-copy-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+    /* 씨앗 입력 패널 */
+    .seed-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    @media (max-width: 580px) {
+      .seed-conn-row { grid-template-columns: 1fr; }
+      .seed-input-row { grid-template-columns: 1fr; }
+    }
+  </style>
+
+<script>
+// ── TABS ──
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ── MODE ──
+let currentMode = 'basic';
+document.getElementById('modeToggle').addEventListener('click', e => {
+  const btn = e.target.closest('.mode-btn');
+  if (!btn) return;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  currentMode = btn.dataset.mode;
+  document.getElementById('generateBtn').textContent =
+    currentMode === 'full' ? '🔬 심화 보고서 생성하기' : '✦ AI로 세특 생성하기';
+});
+
+// ── CHIPS / DIR ──
+['activityTypes','skills'].forEach(id => {
+  document.getElementById(id).addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (chip) chip.classList.toggle('on');
+  });
+});
+document.getElementById('directionGrid').addEventListener('click', e => {
+  const btn = e.target.closest('.dir-btn');
+  if (!btn) return;
+  document.querySelectorAll('#directionGrid .dir-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+});
+
+// ── DATA ──
+const bookMap = {
+  '생명과학': ['이기적 유전자 (리처드 도킨스)','캠벨 생명과학','바디: 우리 몸 안내서 (빌 브라이슨)'],
+  '화학': ['세상을 바꾼 화학','주기율표 (사이 파리엘)','화학의 쓸모'],
+  '물리학': ['떨림과 울림 (김상욱)','코스모스 (칼 세이건)','물리학자는 영화에서 과학을 본다'],
+  '수학': ['수학이 필요한 순간','수학의 쓸모','미적분의 힘'],
+  '국어': ['공부하는 힘 글쓰기','문해력 수업','읽는 인간 리터러시를 경험하다'],
+  '사회·문화': ['정의란 무엇인가','사피엔스 (유발 하라리)','불평등의 세대'],
+  '경제': ['죽은 경제학자의 살아있는 아이디어','넛지 (탈러·선스타인)','경제학 콘서트'],
+  '정보': ['비전공자를 위한 이해할 수 있는 IT 지식','클린 코드','AI 2025 트렌드'],
+  '통합과학': ['과학이 필요한 시간','10대를 위한 미래과학 콘서트','과학은 어떻게 세상을 바꾸는가'],
+  '기타': ['질문의 힘','생각의 탄생','공부의 미래']
+};
+const flowMap = {
+  '세특형': ['의문 설정','자료 조사','교과 개념 연결','발표 및 확장'],
+  '보고서형': ['문제 제기','이론 탐색','분석 과정','결론 정리'],
+  '발표형': ['주제 선정','핵심 근거 정리','시각자료 구성','발표·질의응답'],
+  '의대 연계형': ['건강 문제 인식','생명과학 탐구','의학 사례 연결','예방·관리 제안'],
+  '심화탐구형': ['핵심 질문 설정','심화 자료 조사','비교·분석','확장 해석'],
+  '이공계 연계형': ['문제 발견','원리 탐구','기술 연결','응용 가능성 제시']
+};
+
+function collect() {
+  return {
+    subject: document.getElementById('subject').value.trim(),
+    grade: document.getElementById('grade').value.trim(),
+    major: document.getElementById('major').value.trim(),
+    topic: document.getElementById('topic').value.trim(),
+    question: document.getElementById('question').value.trim(),
+    activity: document.getElementById('activity').value.trim(),
+    reference: document.getElementById('reference').value.trim(),
+    memo: document.getElementById('memo').value.trim(),
+    activities: [...document.querySelectorAll('#activityTypes .chip.on')].map(c=>c.textContent),
+    skills: [...document.querySelectorAll('#skills .chip.on')].map(c=>c.textContent),
+    direction: document.querySelector('#directionGrid .dir-btn.on')?.textContent || '세특형'
+  };
+}
+
+// ── PROMPTS ──
+function promptBasic(d) {
+  const skillsText = d.skills.length ? d.skills.join(', ') : '자기주도성, 자료 분석, 진로 연계';
+  const actText = d.activities.length ? d.activities.join(', ') : '탐구 활동';
+  return `당신은 한국 고교 입시 전문가이자 생기부 세특 작성 전문가입니다.
+
+【학생 정보】
+- 과목: ${d.subject || '(미입력)'}  학년: ${d.grade || '(미입력)'}
+- 희망 진로/학과: ${d.major}
+- 탐구 주제: ${d.topic}
+- 궁금했던 질문: ${d.question || '(미입력)'}
+- 활동 유형: ${actText}
+- 실제 활동: ${d.activity || '(미입력)'}
+- 참고 자료: ${d.reference || '(미입력)'}
+- 강조 역량: ${skillsText}
+- 결과 방향: ${d.direction}
+- 추가 메모: ${d.memo || '없음'}
+
+【작성 조건】
+1. 500자 내외
+2. 의문 품기 → 자료 조사 → 교과 개념 연결 → 정리·발표의 탐구 흐름이 드러나도록
+3. 학생의 사고 과정과 성장이 느껴지는 문장
+4. ${d.major} 진로와의 연계가 자연스럽게
+5. 교사가 관찰·평가한 것처럼 3인칭 서술
+6. 역량(${skillsText})이 구체적 활동과 연결
+
+세특 문구만, 제목 없이 바로 본문만 작성하세요.`;
+}
+
+function promptFull(d) {
+  const skillsText = d.skills.length ? d.skills.join(', ') : '자기주도성, 자료 분석, 진로 연계';
+  return `당신은 한국 고교 입시 전문가이자 생기부 세특 및 탐구보고서 전문가입니다.
+다음 학생 정보를 바탕으로 아래 4가지를 JSON으로 반환하세요.
+
+【학생 정보】
+- 과목: ${d.subject || '(미입력)'}  학년: ${d.grade || '(미입력)'}
+- 희망 진로/학과: ${d.major}
+- 탐구 주제: ${d.topic}
+- 궁금했던 질문: ${d.question || '(미입력)'}
+- 활동 유형: ${d.activities.join(', ') || '탐구 활동'}
+- 실제 활동: ${d.activity || '(미입력)'}
+- 참고 자료: ${d.reference || '(미입력)'}
+- 강조 역량: ${skillsText}
+- 결과 방향: ${d.direction}
+- 추가 메모: ${d.memo || '없음'}
+
+【반환 형식 - JSON만, 설명 없이】
+{
+  "setech": "500자 내외 세특 문구 (3인칭, 탐구 흐름 포함)",
+  "toc": [
+    {"num": "1", "title": "장 제목", "desc": "내용 한 줄 설명"},
+    {"num": "2", "title": "장 제목", "desc": "내용 한 줄 설명"},
+    {"num": "3", "title": "장 제목", "desc": "내용 한 줄 설명"},
+    {"num": "4", "title": "장 제목", "desc": "내용 한 줄 설명"},
+    {"num": "5", "title": "장 제목", "desc": "내용 한 줄 설명"}
+  ],
+  "intro": "서론 초안 (200자 내외, 탐구 배경과 목적)",
+  "conclusion": "결론 초안 (200자 내외, 탐구 결과와 진로 연계)",
+  "interview": [
+    {
+      "q": "면접 예상 질문",
+      "tip": "답변 포인트 한 줄",
+      "answer": "1분 답변 방향 (3~4문장)"
+    },
+    {
+      "q": "꼬리 질문",
+      "tip": "답변 포인트 한 줄",
+      "answer": "1분 답변 방향 (3~4문장)"
+    },
+    {
+      "q": "심화 질문",
+      "tip": "답변 포인트 한 줄",
+      "answer": "1분 답변 방향 (3~4문장)"
+    }
+  ]
+}
+
+JSON만 반환하세요. \`\`\`json 등의 마크다운 없이.`;
+}
+
+// ── API CALL ──
+async function callAPI(prompt, mode) {
+  const res = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt, mode })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || `서버 오류 (${res.status})`);
+  return data.text;
+}
+
+// ── RENDER FLOW ──
+function renderFlow(direction, targetId) {
+  const flow = flowMap[direction] || flowMap['세특형'];
+  document.getElementById(targetId).innerHTML =
+    flow.map((n, i) =>
+      (i ? '<span class="flow-arrow">→</span>' : '') + `<span class="flow-node">${n}</span>`
+    ).join('');
+}
+
+// ── RENDER BASIC ──
+function renderBasic(d, setechText) {
+  renderFlow(d.direction, 'resultFlow');
+  document.getElementById('resultSetech').textContent = setechText;
+
+  const books = (bookMap[d.subject] || bookMap['기타']).map((t, i) => ({
+    title: t,
+    desc: i===0 ? `${d.subject || '해당 교과'} 개념을 ${d.major} 진로와 연결하기 좋은 기본 도서`
+         : i===1 ? `탐구 주제를 확장해 비교·분석 포인트를 잡기에 적합`
+         : `독서 세특 문장과 면접 답변으로 확장하기 좋은 도서`
+  }));
+  document.getElementById('booksBox').innerHTML =
+    books.map(b => `<div class="list-item"><strong>${b.title}</strong><p>${b.desc}</p></div>`).join('');
+
+  const actBase = {
+    '생명과학': ['호르몬·면역 관련 기사 비교 분석','성장·건강 데이터 표로 정리 및 상관관계 해석','교과 개념을 실제 질환 사례와 연결한 발표'],
+    '화학': ['반응 속도 조건 변화 실험 설계','생활 속 화학 물질 작용 원리 탐구','실험 결과 그래프 정리 및 해석'],
+    '물리학': ['운동·에너지·파동 개념의 일상 사례 분석','변수 통제 중심 실험 설계','물리 개념과 공학 기술 연결 발표'],
+    '수학': ['실생활 데이터 활용 함수·통계 분석','그래프 해석 기반 의사결정 보고서','진로 관련 수치 자료 수학 모델링'],
+    '기타': ['관련 자료 3개 이상 비교 정리','핵심 질문 중심 탐구 흐름 시각화','진로 연결 발표 자료 제작']
+  };
+  const acts = (actBase[d.subject] || actBase['기타']).map((desc, i) => ({
+    title: i===0 ? `${d.topic} 자료 조사 활동`
+         : i===1 ? `${d.topic} 발표·보고서 확장`
+         : `${d.topic} 심화 탐구 아이디어`, desc
+  }));
+  document.getElementById('activitiesBox').innerHTML =
+    acts.map(a => `<div class="list-item"><strong>${a.title}</strong><p>${a.desc}</p></div>`).join('');
+
+  const pts = [
+    {t:'교과 개념과 실제 사례 연결', d:`${d.subject || '교과'}에서 배운 내용을 실제 현상과 연결한 점이 강점입니다.`},
+    {t:'진로 방향의 선명함', d:`${d.major}와 연계된 탐구 맥락이 드러나 관심 분야가 분명하게 보입니다.`},
+    {t:'자기주도 탐구 흐름', d:`질문 설정 → 자료 조사 → 정리 및 발표의 흐름이 살아 있어 학업 태도가 잘 드러납니다.`},
+    {t:'확장 가능성', d:`수행평가, 보고서, 면접까지 이어질 수 있는 주제라 활용도가 높습니다.`}
+  ];
+  document.getElementById('pointsBox').innerHTML =
+    pts.map(p => `<div class="list-item"><strong>${p.t}</strong><p>${p.d}</p></div>`).join('');
+
+  document.getElementById('basicResult').classList.add('visible');
+  document.getElementById('fullResult').classList.remove('visible');
+  document.getElementById('basicResult').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── RENDER FULL ──
+function renderFull(d, json) {
+  renderFlow(d.direction, 'fullResultFlow');
+
+  // 세특
+  document.getElementById('fullResultSetech').textContent = json.setech || '';
+
+  // 목차
+  document.getElementById('tocList').innerHTML =
+    (json.toc || []).map(item =>
+      `<div class="toc-item">
+        <div class="toc-num">${item.num}</div>
+        <div class="toc-text"><strong>${item.title}</strong><span>${item.desc}</span></div>
+      </div>`
+    ).join('');
+
+  // 서론/결론
+  document.getElementById('introText').textContent = json.intro || '';
+  document.getElementById('conclusionText').textContent = json.conclusion || '';
+
+  // 면접
+  document.getElementById('interviewList').innerHTML =
+    (json.interview || []).map((item, i) =>
+      `<div class="interview-item">
+        <div class="interview-q">Q${i+1}. ${item.q}</div>
+        <div class="interview-tip">💡 ${item.tip}</div>
+        <div class="interview-a">${item.answer}</div>
+      </div>`
+    ).join('');
+
+  document.getElementById('fullResult').classList.add('visible');
+  document.getElementById('basicResult').classList.remove('visible');
+  document.getElementById('fullResult').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── MAIN GENERATE ──
+let lastData = null;
+
+async function generate() {
+  const d = collect();
+  if (!d.subject || !d.major || !d.topic) {
+    showError('과목, 희망 진로·학과, 탐구 주제는 필수 입력입니다.');
+    return;
+  }
+  clearError();
+  lastData = d;
+  setLoading(true, currentMode === 'full'
+    ? 'Claude AI가 목차·서론·결론·면접 질문을 생성하고 있습니다… (30초 내외)'
+    : 'Claude AI가 세특 문구를 생성하고 있습니다…'
+  );
+
+  try {
+    if (currentMode === 'full') {
+      const raw = await callAPI(promptFull(d), 'full');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const json = JSON.parse(clean);
+      renderFull(d, json);
+    } else {
+      const text = await callAPI(promptBasic(d), 'basic');
+      renderBasic(d, text);
+    }
+  } catch (e) {
+    showError(`생성 오류: ${e.message}`);
+  } finally {
+    setLoading(false);
+  }
+}
+
+function setLoading(on, msg = '') {
+  document.getElementById('loadingBox').classList.toggle('visible', on);
+  if (msg) document.getElementById('loadingMsg').textContent = msg;
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = on;
+  if (!on) btn.textContent = currentMode === 'full' ? '🔬 심화 보고서 생성하기' : '✦ AI로 세특 생성하기';
+  else btn.textContent = '생성 중…';
+}
+function showError(msg) { const el = document.getElementById('errorBox'); el.textContent = msg; el.classList.add('visible'); }
+function clearError() { document.getElementById('errorBox').classList.remove('visible'); }
+
+document.getElementById('generateBtn').addEventListener('click', generate);
+
+// ── COPY HELPERS ──
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const orig = btn.textContent;
+    btn.textContent = '✅ 복사 완료';
+    setTimeout(() => btn.textContent = orig, 1500);
+  } catch { alert('직접 선택 후 복사해주세요.'); }
+}
+
+document.getElementById('copyBtn').addEventListener('click', e =>
+  copyText(document.getElementById('resultSetech').textContent, e.currentTarget));
+document.getElementById('copyBtnFull').addEventListener('click', e =>
+  copyText(document.getElementById('fullResultSetech').textContent, e.currentTarget));
+document.getElementById('copyIntro').addEventListener('click', e =>
+  copyText(document.getElementById('introText').textContent, e.currentTarget));
+document.getElementById('copyConclusion').addEventListener('click', e =>
+  copyText(document.getElementById('conclusionText').textContent, e.currentTarget));
+document.getElementById('copyToc').addEventListener('click', e => {
+  const items = [...document.querySelectorAll('#tocList .toc-item')];
+  const text = items.map(el => {
+    const num = el.querySelector('.toc-num')?.textContent || '';
+    const title = el.querySelector('strong')?.textContent || '';
+    const desc = el.querySelector('span')?.textContent || '';
+    return `${num}장. ${title} - ${desc}`;
+  }).join('\n');
+  copyText(text, e.currentTarget);
+});
+
+// ── 추천 도서 복사 ──
+document.getElementById('copyBooks').addEventListener('click', e => {
+  const items = [...document.querySelectorAll('#booksBox .list-item')];
+  const text = items.map(el =>
+    `• ${el.querySelector('strong')?.textContent || ''}\n  ${el.querySelector('p')?.textContent || ''}`
+  ).join('\n\n');
+  copyText('📚 추천 도서\n\n' + text, e.currentTarget);
+});
+
+// ── 탐구 활동 복사 ──
+document.getElementById('copyActivities').addEventListener('click', e => {
+  const items = [...document.querySelectorAll('#activitiesBox .list-item')];
+  const text = items.map(el =>
+    `• ${el.querySelector('strong')?.textContent || ''}\n  ${el.querySelector('p')?.textContent || ''}`
+  ).join('\n\n');
+  copyText('🔭 탐구 확장 활동\n\n' + text, e.currentTarget);
+});
+
+// ── 합격 포인트 복사 ──
+document.getElementById('copyPoints').addEventListener('click', e => {
+  const items = [...document.querySelectorAll('#pointsBox .list-item')];
+  const text = items.map(el =>
+    `• ${el.querySelector('strong')?.textContent || ''}\n  ${el.querySelector('p')?.textContent || ''}`
+  ).join('\n\n');
+  copyText('✅ 합격 포인트\n\n' + text, e.currentTarget);
+});
+
+// ── 면접 질문 복사 ──
+document.getElementById('copyInterview').addEventListener('click', e => {
+  const items = [...document.querySelectorAll('#interviewList .interview-item')];
+  const text = items.map((el, i) => {
+    const q = el.querySelector('.interview-q')?.textContent || '';
+    const tip = el.querySelector('.interview-tip')?.textContent || '';
+    const a = el.querySelector('.interview-a')?.textContent || '';
+    return `Q${i+1}. ${q.replace(/^Q\d+\.\s*/,'')}\n${tip}\n\n답변 방향:\n${a}`;
+  }).join('\n\n─────────────\n\n');
+  copyText('🎤 면접 예상 질문\n\n' + text, e.currentTarget);
+});
+
+// ── 전체 저장 헬퍼 ──
+function downloadTxt(filename, content) {
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function getListText(boxId, title) {
+  const items = [...document.querySelectorAll(`#${boxId} .list-item`)];
+  if (!items.length) return '';
+  const body = items.map(el =>
+    `• ${el.querySelector('strong')?.textContent || ''}\n  ${el.querySelector('p')?.textContent || ''}`
+  ).join('\n\n');
+  return `\n\n━━━━━━━━━━━━\n${title}\n━━━━━━━━━━━━\n\n${body}`;
+}
+
+// ── 기본 결과 전체 저장 ──
+document.getElementById('saveBasicBtn').addEventListener('click', () => {
+  const d = lastData || {};
+  const setech = document.getElementById('resultSetech')?.textContent || '';
+  let content = `[책마루샘 AI 세특 연구소] 기본 세특 결과\n`;
+  content += `생성일: ${new Date().toLocaleDateString('ko-KR')}\n`;
+  content += `과목: ${d.subject || '-'}  학년: ${d.grade || '-'}  진로: ${d.major || '-'}\n`;
+  content += `탐구 주제: ${d.topic || '-'}\n`;
+  content += `\n━━━━━━━━━━━━\n생기부 세특 문구\n━━━━━━━━━━━━\n\n${setech}`;
+  content += getListText('booksBox', '📚 추천 도서');
+  content += getListText('activitiesBox', '🔭 탐구 확장 활동');
+  content += getListText('pointsBox', '✅ 합격 포인트');
+  downloadTxt(`세특_${d.topic || '결과'}_${Date.now()}.txt`, content);
+});
+
+// ── 심화 결과 전체 저장 ──
+document.getElementById('saveFullBtn').addEventListener('click', () => {
+  const d = lastData || {};
+  const setech = document.getElementById('fullResultSetech')?.textContent || '';
+
+  // 목차
+  const tocItems = [...document.querySelectorAll('#tocList .toc-item')];
+  const tocText = tocItems.map(el => {
+    const num = el.querySelector('.toc-num')?.textContent || '';
+    const title = el.querySelector('strong')?.textContent || '';
+    const desc = el.querySelector('span')?.textContent || '';
+    return `  ${num}장. ${title}\n     ${desc}`;
+  }).join('\n\n');
+
+  // 서론/결론
+  const intro = document.getElementById('introText')?.textContent || '';
+  const conclusion = document.getElementById('conclusionText')?.textContent || '';
+
+  // 면접
+  const intItems = [...document.querySelectorAll('#interviewList .interview-item')];
+  const intText = intItems.map((el, i) => {
+    const q = el.querySelector('.interview-q')?.textContent || '';
+    const tip = el.querySelector('.interview-tip')?.textContent || '';
+    const a = el.querySelector('.interview-a')?.textContent || '';
+    return `Q${i+1}. ${q.replace(/^Q\d+\.\s*/,'')}\n${tip}\n\n답변 방향:\n${a}`;
+  }).join('\n\n─────────────\n\n');
+
+  let content = `[책마루샘 AI 세특 연구소] 심화 보고서 전체 결과\n`;
+  content += `생성일: ${new Date().toLocaleDateString('ko-KR')}\n`;
+  content += `과목: ${d.subject || '-'}  학년: ${d.grade || '-'}  진로: ${d.major || '-'}\n`;
+  content += `탐구 주제: ${d.topic || '-'}\n`;
+  content += `\n━━━━━━━━━━━━\n생기부 세특 문구\n━━━━━━━━━━━━\n\n${setech}`;
+  content += `\n\n━━━━━━━━━━━━\n탐구보고서 목차\n━━━━━━━━━━━━\n\n${tocText}`;
+  content += `\n\n━━━━━━━━━━━━\n서론\n━━━━━━━━━━━━\n\n${intro}`;
+  content += `\n\n━━━━━━━━━━━━\n결론\n━━━━━━━━━━━━\n\n${conclusion}`;
+  content += `\n\n━━━━━━━━━━━━\n면접 예상 질문\n━━━━━━━━━━━━\n\n${intText}`;
+  downloadTxt(`심화보고서_${d.topic || '결과'}_${Date.now()}.txt`, content);
+});
+
+// ── REGEN ──
+document.getElementById('regenBtn').addEventListener('click', async () => {
+  if (!lastData) return;
+  clearError(); setLoading(true, 'Claude AI가 세특 문구를 재생성하고 있습니다…');
+  try {
+    const text = await callAPI(promptBasic(lastData), 'basic');
+    document.getElementById('resultSetech').textContent = text;
+  } catch (e) { showError(`재생성 오류: ${e.message}`); }
+  finally { setLoading(false); }
+});
+document.getElementById('regenBtnFull').addEventListener('click', async () => {
+  if (!lastData) return;
+  clearError(); setLoading(true, 'Claude AI가 심화 보고서를 재생성하고 있습니다…');
+  try {
+    const raw = await callAPI(promptFull(lastData), 'full');
+    const json = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    renderFull(lastData, json);
+  } catch (e) { showError(`재생성 오류: ${e.message}`); }
+  finally { setLoading(false); }
+});
+
+// ── CAREER ──
+const career = {};
+function pickLine(text, kws) {
+  for (const line of text.split('\n').map(l=>l.trim()).filter(Boolean))
+    for (const kw of kws) if (line.includes(kw)) return line;
+  return '';
+}
+document.getElementById('careerAnalyzeBtn').addEventListener('click', () => {
+  const raw = document.getElementById('careerResultRaw').value.trim();
+  if (!raw) { alert('결과를 먼저 붙여넣어 주세요.'); return; }
+  career.code = pickLine(raw,['진로코드','진로 방향','유형']) || '자동 추출 필요';
+  career.trait = pickLine(raw,['핵심 성향','성향','특징']) || '자동 추출 필요';
+  career.strength = pickLine(raw,['강점 키워드','강점']) || '자동 추출 필요';
+  career.jobs = pickLine(raw,['추천 직업','직업 TOP3']) || '자동 추출 필요';
+  career.majors = pickLine(raw,['추천 전공','전공 TOP5']) || '자동 추출 필요';
+  career.subjects = pickLine(raw,['추천 교과','진로 연계 교과']) || '자동 추출 필요';
+  career.setech = pickLine(raw,['세특 연결','세특 포인트']) || '자동 추출 필요';
+  ['Code','Trait','Strength','Jobs','Majors','Subjects','Setech'].forEach(k =>
+    document.getElementById('p'+k).textContent = career[k.toLowerCase()] || '-'
+  );
+  document.getElementById('careerPreview').classList.add('visible');
+  document.getElementById('careerApplyBtn').disabled = false;
+});
+document.getElementById('careerApplyBtn').addEventListener('click', () => {
+  const clean = (s,...ls) => ls.reduce((v,l)=>v.replace(l,'').replace(':','').trim(), s||'');
+  if (career.majors && career.majors !== '자동 추출 필요')
+    document.getElementById('major').value = clean(career.majors,'추천 전공','TOP5');
+  if (career.subjects && career.subjects !== '자동 추출 필요')
+    document.getElementById('reference').value = clean(career.subjects,'추천 교과','진로 연계 교과','교과 전략');
+  if (career.setech && career.setech !== '자동 추출 필요')
+    document.getElementById('memo').value = clean(career.setech,'세특 연결','세특 포인트');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelector('[data-tab="setech"]').classList.add('active');
+  document.getElementById('tab-setech').classList.add('active');
+  alert('반영 완료! 세특 탭에서 확인하세요.');
+});
+</script>
+
+<script>
+// ══ 질문 씨앗 JS ══
+
+function promptSeed(subject, grade, topic, major) {
+  return `당신은 한국 고교 입시 전문가이자 독서·교과 연계 전문가입니다.
+다음 정보를 바탕으로 학생이 탐구를 시작할 수 있는 "질문 씨앗" 5개를 JSON으로 반환하세요.
+
+【학생 정보】
+- 과목: ${subject}
+- 학년: ${grade || '(미입력)'}
+- 탐구 주제/관심사: ${topic}
+- 희망 진로/학과: ${major || '(미입력)'}
+
+【반환 형식 - JSON만, 설명 없이, 마크다운 없이】
+{
+  "seeds": [
+    {
+      "question": "탐구를 시작할 수 있는 핵심 질문 (1문장, 왜/어떻게/무엇이 포함)",
+      "book": {
+        "title": "추천 도서명 (저자)",
+        "reason": "이 질문과 연결되는 이유 2문장"
+      },
+      "subject_link": {
+        "concept": "연결되는 교과 개념 (예: 호르몬 조절, 화학 평형)",
+        "how": "교과 개념이 이 질문과 어떻게 연결되는지 2문장"
+      }
+    }
+  ]
+}
+
+조건:
+1. 질문은 단순 사실 확인이 아니라 탐구와 토론을 유발하는 열린 질문
+2. 5개의 질문은 서로 다른 관점(원인/결과/비교/윤리/실생활 적용 등)에서 설계
+3. 추천 도서는 고등학생이 실제로 읽을 수 있는 수준
+4. 교과 개념은 반드시 ${subject} 교과 내용과 직접 연결
+5. JSON만 반환`;
+}
+
+function renderSeedCards(data) {
+  const wrap = document.getElementById('seedResultWrap');
+  wrap.innerHTML = '';
+
+  (data.seeds || []).forEach((seed, i) => {
+    const card = document.createElement('div');
+    card.className = 'seed-card';
+    card.innerHTML = `
+      <div class="seed-q-row">
+        <span class="seed-num">${i + 1}</span>
+        <div class="seed-q">${seed.question}</div>
+      </div>
+      <hr class="seed-divider" />
+      <div class="seed-conn-row">
         <div>
-          <div class="eyebrow">WADA 기반 탐구형 세특 설계 플랫폼</div>
-          <h1>질문에서 시작해 <span class="accent">세특·탐구보고서·독서·질문씨앗</span>까지 한 번에 설계합니다</h1>
-          <p>
-            진로앱 결과, 교과 활동, 독서 기록을 한 번에 넣으면 WADA 구조로 정리하고
-            세특 문장, 심화 보고서, 독서 연계, 질문씨앗, 면접 확장까지 이어주는 2차 업그레이드판입니다.
-          </p>
-          <div class="hero-buttons">
-            <a class="btn btn-primary" href="#builder">세특 만들기</a>
-            <a class="btn btn-secondary" href="#builder">탐구보고서 만들기</a>
-          </div>
-          <div class="badge-row">
-            <span>세특 300·500자형</span>
-            <span>탐구보고서 기본·심화형</span>
-            <span>독서 세특 자동 생성</span>
-            <span>질문씨앗 확장</span>
-            <span>관리자모드</span>
-          </div>
+          <div class="seed-conn-title" data-icon="📖 ">독서 연계</div>
+          <div class="seed-conn-body"><strong style="color:var(--gold-2);font-size:13px;">${seed.book?.title || ''}</strong>\n\n${seed.book?.reason || ''}</div>
         </div>
-        <div class="card hero-side">
-          <div class="mini">2차 업그레이드 핵심 흐름</div>
-          <div class="stack">
-            <div class="mini-card">
-              <strong>1. 입력</strong>
-              <p>진로앱 결과 · 과목 · 단원 · 질문 · 활동 · 자료 · 독서를 한 번에 입력</p>
-            </div>
-            <div class="mini-card">
-              <strong>2. 구조화</strong>
-              <p>Why / Approach / Data / Application으로 자동 분해</p>
-            </div>
-            <div class="mini-card">
-              <strong>3. 결과</strong>
-              <p>세특 · 탐구보고서 · 독서연계 · 질문씨앗 · 면접확장 탭으로 동시 출력</p>
-            </div>
-          </div>
+        <div>
+          <div class="seed-conn-title" data-icon="🔬 ">교과 연계</div>
+          <div class="seed-conn-body"><strong style="color:var(--sky);font-size:13px;">${seed.subject_link?.concept || ''}</strong>\n\n${seed.subject_link?.how || ''}</div>
         </div>
       </div>
-    </section>
+      <div class="seed-copy-row">
+        <button class="btn-action seed-copy-q" data-idx="${i}">📋 질문 복사</button>
+        <button class="btn-action seed-copy-all" data-idx="${i}">📋 전체 복사</button>
+        <button class="btn-action seed-use-btn" data-idx="${i}">→ 세특에서 활용하기</button>
+      </div>`;
+    wrap.appendChild(card);
+  });
 
-    <section class="section" id="builder">
-      <div class="container layout">
-        <section class="card panel">
-          <div class="sub-badge">입력 패널</div>
-          <h2 class="section-title">탐구형 세특 생성기</h2>
-          <p class="section-desc">진로앱 결과 붙여넣기부터 WADA, 세특, 보고서, 독서, 질문씨앗까지 한 번에 이어지도록 새로 짠 버전입니다.</p>
-
-          <div class="import-box">
-            <h4>진로설계 결과 붙여넣기</h4>
-            <p>진로앱에서 나온 학생용 해석, 학부모용 해석, 추천 전공·직업, 진로 연계 교과 전략, 세특 연결 포인트를 그대로 붙여넣으세요.</p>
-            <div class="field">
-              <label for="careerRaw">진로앱 결과 원문</label>
-              <textarea id="careerRaw" placeholder="진로앱에서 출력된 결과를 그대로 붙여넣으세요."></textarea>
-            </div>
-            <div class="button-row">
-              <button class="btn btn-primary" type="button" onclick="analyzeCareer()">진로앱 결과 분석하기</button>
-              <button class="btn btn-secondary" type="button" onclick="applyCareer()" id="applyCareerBtn" disabled>입력값에 반영하기</button>
-            </div>
-            <div class="preview-grid" id="careerPreview" style="display:none;">
-              <div class="preview-card"><strong>진로 방향</strong><p id="careerDir">-</p></div>
-              <div class="preview-card"><strong>강점 키워드</strong><p id="careerStrength">-</p></div>
-              <div class="preview-card"><strong>추천 직업</strong><p id="careerJobs">-</p></div>
-              <div class="preview-card"><strong>추천 전공</strong><p id="careerMajors">-</p></div>
-              <div class="preview-card"><strong>추천 교과</strong><p id="careerSubjects">-</p></div>
-              <div class="preview-card full"><strong>세특 반영 포인트</strong><p id="careerPoint">-</p></div>
-            </div>
-          </div>
-
-          <div class="field-grid">
-            <div class="field">
-              <label for="grade">학년 <span class="req">*</span></label>
-              <select id="grade">
-                <option value="">선택</option>
-                <option>중3</option>
-                <option>고1</option>
-                <option>고2</option>
-                <option>고3</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="subject">과목 <span class="req">*</span></label>
-              <select id="subject">
-                <option value="">선택</option>
-                <option>생명과학</option>
-                <option>통합과학</option>
-                <option>화학</option>
-                <option>물리학</option>
-                <option>수학</option>
-                <option>국어</option>
-                <option>영어</option>
-                <option>사회·문화</option>
-                <option>통합사회</option>
-                <option>정보</option>
-                <option>기타</option>
-              </select>
-            </div>
-            <div class="field full">
-              <label for="unit">현재 단원 <span class="req">*</span></label>
-              <input type="text" id="unit" placeholder="예: 항상성과 몸의 조절 / 함수와 그래프 / 독서와 작문" />
-            </div>
-            <div class="field full">
-              <label for="major">희망 진로·학과 <span class="req">*</span></label>
-              <input type="text" id="major" placeholder="예: 의대 / 간호학과 / 컴퓨터공학과 / 교육학과" />
-            </div>
-            <div class="field full">
-              <label for="topic">관심 주제·탐구 방향 <span class="req">*</span></label>
-              <input type="text" id="topic" placeholder="예: 청소년기의 호르몬 변화와 신체 증상 / 알고리즘과 정보 편향" />
-            </div>
-            <div class="field full">
-              <label for="question">수업 중 생긴 질문 <span class="req">*</span></label>
-              <textarea id="question" placeholder="예: 호르몬 변화는 왜 체중 증가, 위장장애, PMS와 동시에 연결될 수 있을까?"></textarea>
-            </div>
-            <div class="field full">
-              <label for="activity">수행 활동·발표·토론·실험·분석 내용</label>
-              <textarea id="activity" placeholder="예: 논문 비교, 기사 분석, 교과서 개념 연결, 발표, 그래프 해석, 실험 설계 등"></textarea>
-            </div>
-            <div class="field full">
-              <label for="data">자료·책·기사·논문·통계 근거</label>
-              <textarea id="data" placeholder="예: 교과서, 논문, 기사, 통계자료, 읽은 책 제목, 핵심 수치"></textarea>
-            </div>
-            <div class="field full">
-              <label for="reading">읽은 책 / 독서 메모</label>
-              <textarea id="reading" placeholder="예: 『우울증은 어떻게 병이 되었나』를 읽고 질병이 사회적으로 규정되는 방식에 주목함"></textarea>
-            </div>
-            <div class="field full">
-              <label for="draft">세특 초안 또는 기존 문장</label>
-              <textarea id="draft" placeholder="기존 세특 초안이 있으면 붙여넣으세요. 없으면 비워두셔도 됩니다."></textarea>
-            </div>
-          </div>
-
-          <div class="generate-bar">
-            <button class="btn btn-primary" type="button" onclick="generateAll()">결과 생성하기</button>
-            <button class="btn btn-secondary" type="button" onclick="loadSample()">샘플 불러오기</button>
-            <button class="btn btn-ghost" type="button" onclick="resetForm()">입력 초기화</button>
-          </div>
-        </section>
-
-        <section class="card result-panel">
-          <div class="sub-badge">결과 패널</div>
-          <h2 class="section-title">2차 업그레이드 결과 대시보드</h2>
-          <p class="section-desc">세특, 탐구보고서, 독서 연계, 질문씨앗, 면접 확장을 결과 탭으로 나눠 보여줍니다.</p>
-
-          <div class="profile-summary">
-            <div class="summary-item"><strong>학년 / 과목</strong><p id="summaryGradeSubject">-</p></div>
-            <div class="summary-item"><strong>진로 / 주제</strong><p id="summaryMajorTopic">-</p></div>
-            <div class="summary-item"><strong>추천 탐구 유형</strong><p id="summaryType">-</p></div>
-          </div>
-
-          <div class="top-tabs">
-            <button class="tab-btn active" data-tab="setech">세특 결과</button>
-            <button class="tab-btn" data-tab="report">탐구보고서</button>
-            <button class="tab-btn" data-tab="readingTab">독서 연계</button>
-            <button class="tab-btn" data-tab="questions">질문씨앗</button>
-            <button class="tab-btn" data-tab="interview">면접 확장</button>
-            <button class="tab-btn" data-tab="admin">관리자모드</button>
-          </div>
-
-          <div id="emptyState" class="empty-state">
-            <div>
-              <div style="font-size:40px; margin-bottom:8px;">✍️</div>
-              학생 정보를 입력한 뒤 <strong>결과 생성하기</strong>를 누르면<br />
-              WADA 분석, 세특, 탐구보고서, 독서 연계, 질문씨앗 결과가 여기에 표시됩니다.
-            </div>
-          </div>
-
-          <div id="resultWrap" style="display:none;">
-            <div id="setech" class="tab-pane active">
-              <div class="content-card">
-                <h4>진로앱 연동 요약</h4>
-                <p id="careerLinkedSummary">-</p>
-              </div>
-              <div class="content-card">
-                <h4>WADA 구조 분석</h4>
-                <div class="wada-grid">
-                  <div class="content-card" style="margin:0;"><h4 style="margin-bottom:6px;">Why</h4><p id="wadaWhy">-</p></div>
-                  <div class="content-card" style="margin:0;"><h4 style="margin-bottom:6px;">Approach</h4><p id="wadaApproach">-</p></div>
-                  <div class="content-card" style="margin:0;"><h4 style="margin-bottom:6px;">Data</h4><p id="wadaData">-</p></div>
-                  <div class="content-card" style="margin:0;"><h4 style="margin-bottom:6px;">Application</h4><p id="wadaApplication">-</p></div>
-                </div>
-              </div>
-              <div class="content-card">
-                <h4>생활기록부 기재용 세특 문장</h4>
-                <p id="setech500">-</p>
-              </div>
-              <div class="content-card">
-                <h4>교사용 압축형 세특</h4>
-                <p id="setech300">-</p>
-              </div>
-              <div class="content-card">
-                <h4>강점 키워드 · 드러난 역량</h4>
-                <div class="pill-list" id="strengthPills"></div>
-              </div>
-            </div>
-
-            <div id="report" class="tab-pane">
-              <div class="content-card">
-                <h4>탐구보고서 제목</h4>
-                <p id="reportTitle">-</p>
-              </div>
-              <div class="content-card">
-                <h4>탐구보고서 기본형</h4>
-                <p id="reportBasic">-</p>
-              </div>
-              <div class="content-card">
-                <h4>탐구보고서 심화형 구조</h4>
-                <p id="reportAdvanced">-</p>
-              </div>
-            </div>
-
-            <div id="readingTab" class="tab-pane">
-              <div class="content-card">
-                <h4>독서 연계 분석</h4>
-                <p id="readingAnalysis">-</p>
-              </div>
-              <div class="content-card">
-                <h4>독서 세특 문장</h4>
-                <p id="readingSetech">-</p>
-              </div>
-              <div class="content-card">
-                <h4>비교 독서 · 확장 제안</h4>
-                <p id="readingExpand">-</p>
-              </div>
-            </div>
-
-            <div id="questions" class="tab-pane">
-              <div class="content-card">
-                <h4>추천 질문씨앗</h4>
-                <ul id="questionList"></ul>
-              </div>
-              <div class="content-card">
-                <h4>추천 활동 형태</h4>
-                <p id="activitySuggestion">-</p>
-              </div>
-            </div>
-
-            <div id="interview" class="tab-pane">
-              <div class="content-card">
-                <h4>면접 예상 질문</h4>
-                <ul id="interviewList"></ul>
-              </div>
-              <div class="content-card">
-                <h4>30초 답변 틀</h4>
-                <p id="interviewAnswer">-</p>
-              </div>
-            </div>
-
-            <div id="admin" class="tab-pane">
-              <div class="content-card">
-                <h4>관리자모드 제안</h4>
-                <p id="adminMode">-</p>
-              </div>
-              <div class="content-card">
-                <h4>다음 보완 포인트</h4>
-                <p id="nextSteps">-</p>
-              </div>
-            </div>
-
-            <div class="sticky-actions">
-              <button class="btn btn-primary" type="button" onclick="copyCurrentTab()">현재 탭 복사</button>
-              <button class="btn btn-secondary" type="button" onclick="copySetech()">세특만 복사</button>
-              <button class="btn btn-secondary" type="button" onclick="copyReport()">보고서만 복사</button>
-            </div>
-          </div>
-        </section>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      질문 → 탐구 → 근거 → 세특 → 보고서 → 독서 → 질문씨앗 → 면접 확장 흐름으로 설계된 책마루형 세특앱 2차 업그레이드판
-    </div>
-  </footer>
-
-  <script>
-    const parsedCareer = {
-      direction: "",
-      strengths: "",
-      jobs: "",
-      majors: "",
-      subjects: "",
-      point: ""
-    };
-
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const panes = document.querySelectorAll('.tab-pane');
-
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach(b => b.classList.remove('active'));
-        panes.forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
+  // 질문 복사
+  wrap.querySelectorAll('.seed-copy-q').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const idx = +e.currentTarget.dataset.idx;
+      copyText(data.seeds[idx].question, e.currentTarget);
     });
+  });
 
-    function pickLine(text, keywords){
-      const lines = text.split(/\n+/).map(v => v.trim()).filter(Boolean);
-      for(const line of lines){
-        for(const key of keywords){
-          if(line.includes(key)) return line;
-        }
+  // 씨앗 전체 복사 (질문 + 도서 + 교과연계)
+  wrap.querySelectorAll('.seed-copy-all').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const idx = +e.currentTarget.dataset.idx;
+      const s = data.seeds[idx];
+      const text =
+        `❓ 질문 씨앗\n${s.question}\n\n` +
+        `📖 독서 연계\n${s.book?.title || ''}\n${s.book?.reason || ''}\n\n` +
+        `🔬 교과 연계\n${s.subject_link?.concept || ''}\n${s.subject_link?.how || ''}`;
+      copyText(text, e.currentTarget);
+    });
+  });
+
+  // 세특 탭에 질문 반영
+  wrap.querySelectorAll('.seed-use-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const idx = +e.currentTarget.dataset.idx;
+      const seed = data.seeds[idx];
+      // 교과/주제/질문을 세특 탭 입력에 넣기
+      const subjectEl = document.getElementById('subject');
+      const seedSubjectVal = document.getElementById('seedSubject').value;
+      if (seedSubjectVal) {
+        [...subjectEl.options].forEach(opt => { if (opt.value === seedSubjectVal) opt.selected = true; });
       }
-      return "";
-    }
+      document.getElementById('topic').value = document.getElementById('seedTopic').value;
+      document.getElementById('question').value = seed.question;
+      const majorVal = document.getElementById('seedMajor').value;
+      if (majorVal) document.getElementById('major').value = majorVal;
 
-    function cleanPrefix(text){
-      return text.replace(/^[^:：]+[:：]\s*/, '').trim();
-    }
+      // 세특 탭으로 전환
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector('[data-tab="setech"]').classList.add('active');
+      document.getElementById('tab-setech').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
 
-    function analyzeCareer(){
-      const raw = document.getElementById('careerRaw').value.trim();
-      if(!raw){
-        alert('진로앱 결과를 먼저 붙여넣어 주세요.');
-        return;
-      }
-      parsedCareer.direction = cleanPrefix(pickLine(raw, ['진로코드', '진로 방향', '유형', '핵심 방향']) || '공감형 탐구자');
-      parsedCareer.strengths = cleanPrefix(pickLine(raw, ['강점 키워드', '강점', '핵심 키워드']) || '탐구성, 공감력, 분석력, 자기주도성');
-      parsedCareer.jobs = cleanPrefix(pickLine(raw, ['추천 직업', '직업 TOP3']) || '의사, 연구원, 보건전문가');
-      parsedCareer.majors = cleanPrefix(pickLine(raw, ['추천 전공', '전공 TOP5']) || '의예과, 간호학과, 보건행정학과');
-      parsedCareer.subjects = cleanPrefix(pickLine(raw, ['추천 교과', '진로 연계 교과', '교과 전략']) || '생명과학, 화학, 수학, 정보');
-      parsedCareer.point = cleanPrefix(pickLine(raw, ['세특 연결', '세특 포인트', '세특 연결 문장']) || '질문 출발, 자료 분석, 진로 확장, 성찰 문장');
+  wrap.style.display = 'block';
+  document.getElementById('seedSaveRow').style.display = 'block';
 
-      document.getElementById('careerDir').textContent = parsedCareer.direction;
-      document.getElementById('careerStrength').textContent = parsedCareer.strengths;
-      document.getElementById('careerJobs').textContent = parsedCareer.jobs;
-      document.getElementById('careerMajors').textContent = parsedCareer.majors;
-      document.getElementById('careerSubjects').textContent = parsedCareer.subjects;
-      document.getElementById('careerPoint').textContent = parsedCareer.point;
-      document.getElementById('careerPreview').style.display = 'grid';
-      document.getElementById('applyCareerBtn').disabled = false;
-    }
+  // 씨앗 전체 저장
+  const saveBtn = document.getElementById('saveSeedBtn');
+  saveBtn.onclick = () => {
+    const subject = document.getElementById('seedSubject').value;
+    const topic = document.getElementById('seedTopic').value;
+    let content = `[책마루샘 AI 세특 연구소] 질문 씨앗\n`;
+    content += `생성일: ${new Date().toLocaleDateString('ko-KR')}\n`;
+    content += `과목: ${subject}  탐구 주제: ${topic}\n`;
+    (data.seeds || []).forEach((s, i) => {
+      content += `\n\n━━━━━━━━━━━━\n씨앗 ${i+1}. ${s.question}\n━━━━━━━━━━━━\n`;
+      content += `\n📖 독서 연계\n${s.book?.title || ''}\n${s.book?.reason || ''}\n`;
+      content += `\n🔬 교과 연계\n${s.subject_link?.concept || ''}\n${s.subject_link?.how || ''}`;
+    });
+    downloadTxt(`질문씨앗_${topic || '결과'}_${Date.now()}.txt`, content);
+  };
 
-    function applyCareer(){
-      if(parsedCareer.majors){
-        document.getElementById('major').value = parsedCareer.majors;
-      }
-      if(parsedCareer.point && !document.getElementById('topic').value){
-        document.getElementById('topic').value = parsedCareer.point;
-      }
-      if(parsedCareer.subjects && !document.getElementById('data').value){
-        document.getElementById('data').value = '추천 교과 전략: ' + parsedCareer.subjects;
-      }
-      alert('진로앱 결과를 세특앱 입력값에 반영했습니다.');
-    }
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
-    function loadSample(){
-      document.getElementById('grade').value = '고2';
-      document.getElementById('subject').value = '생명과학';
-      document.getElementById('unit').value = '항상성과 몸의 조절';
-      document.getElementById('major').value = '의대';
-      document.getElementById('topic').value = '청소년기의 호르몬 변화와 신체 증상의 상관관계';
-      document.getElementById('question').value = '호르몬 변화는 왜 체중 증가, 위장장애, PMS와 동시에 연결될 수 있을까?';
-      document.getElementById('activity').value = '교과서 항상성 단원 개념을 바탕으로 여성호르몬, 성장호르몬, 자율신경계의 상호작용을 기사와 논문 자료로 비교하고 발표 자료를 제작함.';
-      document.getElementById('data').value = '생명과학 교과서, 청소년 건강 관련 기사, 호르몬 변화와 대사 조절 관련 설명 자료를 참고함.';
-      document.getElementById('reading').value = '『우울증은 어떻게 병이 되었나』를 읽고 질병이 생물학적 현상뿐 아니라 사회적 해석과 제도 속에서 규정될 수 있다는 점에 주목함.';
-      document.getElementById('draft').value = '';
-      document.getElementById('careerRaw').value = '진로 방향: 의학·보건 탐구형\n강점 키워드: 공감력, 탐구성, 분석력, 성찰력\n추천 직업: 의사, 임상연구원, 보건교육사\n추천 전공: 의예과, 간호학과, 보건행정학과\n추천 교과: 생명과학, 화학, 수학, 정보\n세특 포인트: 질문에서 출발해 자료 근거를 분석하고 환자 중심 가치로 확장';
-      analyzeCareer();
-    }
+document.getElementById('seedGenerateBtn').addEventListener('click', async () => {
+  const subject = document.getElementById('seedSubject').value.trim();
+  const topic = document.getElementById('seedTopic').value.trim();
+  if (!subject || !topic) {
+    const el = document.getElementById('seedErrorBox');
+    el.textContent = '과목과 탐구 주제는 필수 입력입니다.';
+    el.classList.add('visible');
+    return;
+  }
+  document.getElementById('seedErrorBox').classList.remove('visible');
+  document.getElementById('seedResultWrap').style.display = 'none';
 
-    function resetForm(){
-      document.querySelectorAll('input[type=text], textarea').forEach(el => el.value = '');
-      document.querySelectorAll('select').forEach(el => el.value = '');
-      document.getElementById('careerPreview').style.display = 'none';
-      document.getElementById('applyCareerBtn').disabled = true;
-    }
+  const loadingBox = document.getElementById('seedLoadingBox');
+  const btn = document.getElementById('seedGenerateBtn');
+  loadingBox.classList.add('visible');
+  btn.disabled = true;
+  btn.textContent = '생성 중…';
 
-    function sentenceOrFallback(value, fallback){
-      return value && value.trim() ? value.trim() : fallback;
-    }
+  const grade = document.getElementById('seedGrade').value;
+  const major = document.getElementById('seedMajor').value;
 
-    function generateAll(){
-      const grade = document.getElementById('grade').value;
-      const subject = document.getElementById('subject').value;
-      const unit = document.getElementById('unit').value.trim();
-      const major = document.getElementById('major').value.trim();
-      const topic = document.getElementById('topic').value.trim();
-      const question = document.getElementById('question').value.trim();
-      const activity = document.getElementById('activity').value.trim();
-      const data = document.getElementById('data').value.trim();
-      const reading = document.getElementById('reading').value.trim();
-
-      if(!grade || !subject || !unit || !major || !topic || !question){
-        alert('학년, 과목, 단원, 진로, 주제, 질문은 꼭 입력해 주세요.');
-        return;
-      }
-
-      const why = `${subject} ${unit} 단원을 학습하던 중 '${question}'라는 의문이 생겨 ${topic}을 중심으로 탐구를 시작함.`;
-      const approach = `${sentenceOrFallback(activity, '교과 개념을 정리하고 기사·자료를 비교하며 발표와 탐구노트를 작성함.')} 이 과정에서 단순 요약에 그치지 않고 질문의 인과관계를 스스로 설명하려고 시도함.`;
-      const dataText = `${sentenceOrFallback(data, '교과서 개념, 기사, 설명 자료를 바탕으로 핵심 근거를 정리함.')} ${reading ? '또한 독서 내용을 연결해 관점을 확장함.' : ''}`;
-      const application = `${major} 진로와 연결하여 ${topic}을 단순한 지식 확인이 아니라 실제 삶과 건강, 사회적 맥락까지 해석하는 탐구로 확장함.`;
-
-      const setech500 = `${why} ${approach} 특히 ${subject}의 핵심 개념을 실제 사례와 연결해 해석하며, 자료 간 공통점과 차이점을 비교하는 과정에서 분석적 사고를 드러냄. ${dataText} 이를 통해 ${application} 탐구 과정을 스스로 구조화하고 결과를 설명하는 학업적 탐구 역량을 보임.`;
-      const setech300 = `${subject} ${unit} 단원을 바탕으로 '${question}'라는 문제의식을 설정하고 ${topic}을 중심으로 자료를 비교·분석함. 교과 개념과 실제 사례를 연결해 해석하며 ${major} 진로와 이어지는 탐구 역량을 드러냄.`;
-
-      const reportTitle = `${topic} 탐구`;
-      const reportBasic = `1. 탐구 동기: ${why}\n2. 핵심 질문: ${question}\n3. 탐구 방법: ${sentenceOrFallback(activity, '교과서 개념 정리, 자료 조사, 비교 분석')}\n4. 분석 결과: 자료를 통해 ${topic}이 단일 원인이 아니라 복합적인 상호작용으로 이해될 수 있음을 확인함.\n5. 결론: ${major} 진로와 연결하여 후속 탐구 가치가 있음을 정리함.`;
-      const reportAdvanced = `탐구 동기\n${why}\n\n연구 질문\n- ${question}\n- 이 현상을 설명하는 핵심 교과 개념은 무엇인가?\n- 자료 간 차이는 어떤 변수에서 비롯되는가?\n\n가설 설정\n${topic}은 하나의 요인보다 여러 생리·사회적 요인이 함께 작용하는 현상일 가능성이 높다고 가정함.\n\n이론적 배경\n${subject} ${unit}의 핵심 개념을 정리하고, 관련 개념어를 실제 사례에 적용함.\n\n탐구 방법\n${sentenceOrFallback(activity, '자료 조사, 비교 분석, 교과 개념 정리, 발표 자료 구성')}\n\n자료·근거\n${sentenceOrFallback(data, '교과서, 기사, 설명 자료')}\n${reading ? `독서 연결: ${reading}` : ''}\n\n결론 및 한계\n질문에 대한 답을 교과 개념으로 설명하되, 자료 수와 변인 통제의 한계가 있음을 밝히고 후속 탐구 방향을 제시함.`;
-
-      const readingAnalysis = reading
-        ? `읽은 내용인 "${reading}"을 ${subject}의 ${unit} 개념과 연결해 해석함. 독서 내용을 단순 요약하지 않고 교과 개념으로 재해석하는 구조가 적절함.`
-        : '읽은 책을 입력하면 교과 연계 분석, 독서 세특, 비교 독서 추천이 여기에 표시됩니다.';
-      const readingSetech = reading
-        ? `${reading}를 바탕으로 ${subject}의 핵심 개념을 실제 삶의 문제와 연결해 해석하고, 단순 독후감이 아니라 교과적 관점에서 재구성하려는 태도를 보임. 이를 ${major} 진로와 연결해 탐구의 의미를 확장함.`
-        : '독서 입력이 없어 기본 안내만 표시됩니다.';
-      const readingExpand = reading
-        ? `비교 독서 제안: 현재 책과 반대 관점 또는 사회적 확장성을 가진 도서를 함께 읽으며 관점을 넓혀보도록 제안함.\n후속 질문: 책의 주장과 교과 개념이 일치하거나 충돌하는 지점은 무엇인가?`
-        : '책 제목 또는 독서 메모를 넣으면 비교 독서 추천과 확장 질문이 생성됩니다.';
-
-      const questions = [
-        `${question} → 교과 개념 정리 → 실제 사례 분석`,
-        `${topic}이 단일 원인이 아니라 복합 요인의 결과라면, 핵심 변인은 무엇일까? → 자료 비교 → 변인 추정`,
-        `${major} 진로에서 이 주제를 왜 중요하게 다뤄야 할까? → 직업 역할 탐색 → 윤리적 의미 확장`
-      ];
-
-      const interviewQs = [
-        `왜 이 주제를 선택했나요?`,
-        `가장 중요하게 사용한 자료는 무엇이며, 왜 그렇게 판단했나요?`,
-        `이번 탐구의 한계는 무엇이고, 다음에는 어떻게 보완하고 싶나요?`
-      ];
-
-      const strengthTags = [
-        '질문 설정',
-        '교과 연계',
-        '자료 분석',
-        '진로 확장',
-        '성찰',
-        parsedCareer.strengths || '탐구성'
-      ];
-
-      const activitySuggestion = `추천 활동: 발표형 + 조사형 + 보고서형 조합이 적합합니다. ${subject} 개념을 먼저 정리한 뒤 자료 비교, 발표, 보고서 확장 순서가 좋습니다.`;
-      const interviewAnswer = `저는 ${topic}에 대해 '${question}'라는 궁금증에서 탐구를 시작했습니다. ${sentenceOrFallback(activity, '교과 개념 정리와 자료 비교 분석')}을 통해 질문을 해석했고, 그 과정에서 ${major} 진로와 연결되는 의미를 발견했습니다.`;
-      const adminMode = `추천 설정: ${grade} / ${major} 계열 / ${subject} 과목 기준으로 '심화형 + 교사용 압축형 + 보고서형' 동시 출력 권장.`;
-      const nextSteps = `다음 보완 포인트\n1. 근거 자료 제목과 수치를 더 구체화하기\n2. 한계와 오류 문장을 명확히 쓰기\n3. 비교 독서 1권 추가하기\n4. 면접 대비 30초 답변까지 연결하기`;
-
-      document.getElementById('summaryGradeSubject').textContent = `${grade} · ${subject}`;
-      document.getElementById('summaryMajorTopic').textContent = `${major} · ${topic}`;
-      document.getElementById('summaryType').textContent = `${major} 진로형 / WADA 기반 탐구형`;
-
-      document.getElementById('careerLinkedSummary').textContent =
-        parsedCareer.direction
-          ? `진로 방향: ${parsedCareer.direction}\n강점 키워드: ${parsedCareer.strengths}\n추천 전공: ${parsedCareer.majors}\n추천 교과: ${parsedCareer.subjects}\n세특 반영 포인트: ${parsedCareer.point}`
-          : '진로앱 결과를 붙여넣으면 요약이 여기에 표시됩니다.';
-
-      document.getElementById('wadaWhy').textContent = why;
-      document.getElementById('wadaApproach').textContent = approach;
-      document.getElementById('wadaData').textContent = dataText;
-      document.getElementById('wadaApplication').textContent = application;
-      document.getElementById('setech500').textContent = setech500;
-      document.getElementById('setech300').textContent = setech300;
-
-      const pillWrap = document.getElementById('strengthPills');
-      pillWrap.innerHTML = '';
-      strengthTags.join(',').split(',').map(v => v.trim()).filter(Boolean).forEach(tag => {
-        const span = document.createElement('span');
-        span.textContent = tag;
-        pillWrap.appendChild(span);
-      });
-
-      document.getElementById('reportTitle').textContent = reportTitle;
-      document.getElementById('reportBasic').textContent = reportBasic;
-      document.getElementById('reportAdvanced').textContent = reportAdvanced;
-      document.getElementById('readingAnalysis').textContent = readingAnalysis;
-      document.getElementById('readingSetech').textContent = readingSetech;
-      document.getElementById('readingExpand').textContent = readingExpand;
-
-      const qList = document.getElementById('questionList');
-      qList.innerHTML = '';
-      questions.forEach(q => {
-        const li = document.createElement('li');
-        li.textContent = q;
-        qList.appendChild(li);
-      });
-
-      document.getElementById('activitySuggestion').textContent = activitySuggestion;
-
-      const iList = document.getElementById('interviewList');
-      iList.innerHTML = '';
-      interviewQs.forEach(q => {
-        const li = document.createElement('li');
-        li.textContent = q;
-        iList.appendChild(li);
-      });
-
-      document.getElementById('interviewAnswer').textContent = interviewAnswer;
-      document.getElementById('adminMode').textContent = adminMode;
-      document.getElementById('nextSteps').textContent = nextSteps;
-
-      document.getElementById('emptyState').style.display = 'none';
-      document.getElementById('resultWrap').style.display = 'block';
-    }
-
-    function getActivePane(){
-      return document.querySelector('.tab-pane.active');
-    }
-
-    function copyText(text){
-      navigator.clipboard.writeText(text).then(() => {
-        alert('복사되었습니다.');
-      }).catch(() => {
-        alert('복사에 실패했습니다. 직접 선택해서 복사해 주세요.');
-      });
-    }
-
-    function copyCurrentTab(){
-      const pane = getActivePane();
-      if(!pane) return;
-      copyText(pane.innerText.trim());
-    }
-
-    function copySetech(){
-      copyText(document.getElementById('setech500').innerText + '\n\n' + document.getElementById('setech300').innerText);
-    }
-
-    function copyReport(){
-      copyText(document.getElementById('reportTitle').innerText + '\n\n' + document.getElementById('reportBasic').innerText + '\n\n' + document.getElementById('reportAdvanced').innerText);
-    }
-  </script>
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: promptSeed(subject, grade, topic, major), mode: 'full' })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || '서버 오류');
+    const clean = data.text.replace(/```json|```/g, '').trim();
+    const json = JSON.parse(clean);
+    renderSeedCards(json);
+  } catch (e) {
+    const el = document.getElementById('seedErrorBox');
+    el.textContent = `생성 오류: ${e.message}`;
+    el.classList.add('visible');
+  } finally {
+    loadingBox.classList.remove('visible');
+    btn.disabled = false;
+    btn.textContent = '🌱 질문 씨앗 생성하기';
+  }
+});
+</script>
 </body>
 </html>
